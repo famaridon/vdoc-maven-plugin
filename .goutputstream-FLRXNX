@@ -1,0 +1,12 @@
+# Site settings
+title: VDoc maven plugin WebSite
+email: 
+description: > # this means to ignore newlines until "baseurl:"
+  VDoc maven plugin configuration and help.
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://famaridon.github.io/repository" # the base hostname & protocol for your site
+twitter_username: jekyllrb
+github_username:  famaridon
+
+# Build settings
+markdown: kramdown
