@@ -1,7 +1,7 @@
 #Jekyll
 _site
 .sass-cache
-*.goutputstreal-*
+*.goutputstream-*
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 
