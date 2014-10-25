@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" defaultCharsetForPropertiesFiles="UTF-8">
-    <file url="file://$PROJECT_DIR$/src/main/java/com/vdoc/maven/plugin/DeployVDocMojo.java" charset="windows-1252" />
-    <file url="file://$PROJECT_DIR$/src/main/java/com/vdoc/maven/plugin/ScopedPropertiesMojo.java" charset="windows-1252" />
-    <file url="PROJECT" charset="UTF-8" />
-  </component>
-</project>
-
