@@ -1,13 +1,50 @@
 ---
-layout: page
+layout: doc
 title: Hard deploy
+description: this goal is used to deploy a project into the targeted VDoc install.
 permalink: /hard-deploy/
 category: doc
 weight: 2
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](http://jekyllrb.com/)
+<h2>Full name</h2>
+<p>com.vdoc.maven:vdoc-maven-plugin:{{vdoc_maven_plugin_version}}:hard-deploy</p>
 
-You can find the source code for the Jekyll new theme at: [github.com/jglovier/jekyll-new](https://github.com/jglovier/jekyll-new)
+<h2>Attributes</h2>
+<ul>
+    <li>Requires a Maven project to be executed.</li>
+    <li>Requires dependency resolution of artifacts in scope: runtime.</li>
+    <li>The goal is thread-safe and supports parallel builds.</li>
+    <li>Binds by default to the lifecycle phase: package.</li>
+</ul>
 
-You can find the source code for Jekyll at [github.com/jekyll/jekyll](https://github.com/jekyll/jekyll)
+<h3>Required Parameters</h3>
+<dl class="dl-horizontal">
+    <dt>vdoc.home</dt>
+    <dd><span class="type">File</span> the target VDoc instance home.</dd>
+</dl>
+
+<h3>Optional Parameters</h3>
+
+<dl class="dl-horizontal">
+    <dt>vdoc.home</dt>
+    <dd><span class="type">File</span> the target VDoc instance home.</dd>
+
+    <dt>with.custom</dt>
+    <dd><span class="type">boolean</span> the custom folder must be updated.<span class="default-value">default : true</span></dd>
+
+    <dt>include.test</dt>
+    <dd><span class="type">boolean</span> test jar should be deployed.<span class="default-value">default : true</span></dd>
+
+    <dt>include.source</dt>
+    <dd><span class="type">boolean</span> source jar should be deployed.<span class="default-value">default : false</span></dd>
+
+    <dt>sourceCustom</dt>
+    <dd><span class="type">File</span> Directory containing the generated source JAR.<span class="default-value">default : ${project.build.directory}</span></dd>
+
+    <dt>jarDirectory</dt>
+    <dd><span class="type">File</span> Directory containing the generated JAR.<span class="default-value">default : ${project.build.directory}</span></dd>
+
+    <dt>jarName</dt>
+    <dd><span class="type">File</span> Name of the generated JAR.<span class="default-value">default : ${project.build.finalName}</span></dd>
+</dl>

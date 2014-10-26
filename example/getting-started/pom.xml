@@ -1,10 +1,82 @@
-<project>
-    ...
-    <repositories>
-    <repository>
-        <id>vdoc-release</id>
-        <name>VDoc release repository</name>
-        <url>http://nexus.myvdoc.net/release/</url>
-    </repository>
-    ...
+---
+---
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.vdoc.engineering</groupId>
+        <artifactId>sdk.advanced</artifactId>
+        <version>{{ site.vdoc_current_version }}</version>
+    </parent>
+
+    <artifactId>sdk.commons</artifactId>
+    <version>1.11-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <vdoc.version>{{ site.vdoc_current_version }}</vdoc.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.9</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jasypt</groupId>
+            <artifactId>jasypt</artifactId>
+            <version>1.9.2</version>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.vdoc.maven</groupId>
+                <artifactId>vdoc-maven-plugin</artifactId>
+                <version>{{ site.vdoc_maven_plugin_version }}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>hard-deploy</goal>
+                        </goals>
+                        <configuration>
+                            <includeTest>false</includeTest>
+                            <vdocHome>D:\Install\VDoc{{ site.vdoc_current_version }}</vdocHome>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

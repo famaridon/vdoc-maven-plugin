@@ -13,9 +13,16 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 {% assign pages = site.pages | sort:"weight"  %}
-                {% for page in pages %}
-                    {% if page.category == "doc" and page.title %}
-                        <li><a class="page-link" href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a></li>
+                {% for node in pages %}
+                    {% if node.category == "doc" and node.title %}
+                        {% if page.url == node.url %}
+                <li class="active">
+                        {% else %}
+                <li>
+                        {% endif %}
+                    <a class="page-link" href="{{ node.url | prepend: site.baseurl }}">{{ node.title }}</a>
+                </li>
+
                     {% endif %}
                 {% endfor %}
             </ul>

@@ -7,9 +7,15 @@ category: doc
 weight: 1
 ---
 
-<h2 id="get">Get maven plugin</h2>
-<h3 id="get1">Get maven plugin1</h3>
-<h3 id="get2">Get maven plugin2</h3>
-<h3 id="">Get maven plugin3</h3>
 <h2 id="maven-repository">VDoc maven repository</h2>
+<p>The plugin is actually not published on standard Nexus. You can find it into VDoc Nexus </p>
+<h3>Add VDoc repository</h3>
+<pre data-src="{{ '/example/getting-started/setting.xml' | prepend: site.baseurl }}" d></pre>
+
+<h3>Configure username/password</h3>
+<p>VDoc repository is private you need to request username/password on <a href="http://www.myvdoc.net">MyVDoc</a></p>
+<p class="alert alert-info">You need help for configure username/password see <a href="http://maven.apache.org/settings.html#Servers">Maven servers documentation</a></p>
+
 <h2 id="example">Example</h2>
+
+<pre data-src="{{ '/example/getting-started/pom.xml' | prepend: site.baseurl }}" d></pre>
