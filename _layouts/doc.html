@@ -1,0 +1,28 @@
+---
+layout: default
+---
+
+<div class="container-fluid container-inverse master-head">
+    <div class="container"></div>
+    <h1>{{ page.title }}</h1>
+    <p class="lead">{{ page.description }}</p>
+</div>
+
+<div class="container">
+    <div class="raw">
+        <div class="col-xs-12 col-md-8 main-content" >{{ content }}</div>
+        <div class="hidden-xs col-md-4 side-menu toc">
+
+        </div>
+    </div>
+
+</div><!-- /.container -->
+
+<script language="JavaScript">
+    $( document ).ready(function() {
+        $('.toc').htoc({
+            'selectors': 'h2,h3', //elements to use as headings
+            'container': '.main-content' //element to find all selectors in
+        });
+    });
+</script>

@@ -1,0 +1,10 @@
+.btn-primary.btn-inverse {
+  color: $color-primary-0;
+  background-color: transparent;
+  border-color: $color-primary-0;
+  &:hover{
+    color: white;
+    background-color: $color-primary-0;
+    border-color: white;
+  }
+}

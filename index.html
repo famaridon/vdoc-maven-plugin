@@ -1,25 +1,52 @@
 ---
 title: VDoc maven plugin
-layout: default
+layout: home
 category: home
 ---
 
-<div class="home">
+<div class="container-fluid container-inverse master-head">
+    <div class="container"></div>
+    <h1>VDoc maven plugin documentation</h1>
+    <p class="lead">A simple maven plugin to provide VDoc utilities.</p>
+    <p><a class="btn btn-primary btn-lg" role="button" href="{{ '/getting-started/' | prepend: site.baseurl }}">Get started</a></p>
+</div>
 
-  <h1 class="page-heading">Posts</h1>
+<div class="container features">
+    <div class="raw">
 
-  <ul class="post-list">
-    {% for post in site.posts %}
-      <li>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+        <div class="col-xs-12 col-sm-4">
+            <i class="fa fa-puzzle-piece fa-5x"></i>
 
-        <h2>
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
-      </li>
-    {% endfor %}
-  </ul>
+            <h2>Hard deploy to VDoc</h2>
 
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
+            <p>Help you to deploy your project into VDoc.</p>
+
+            <p><a class="btn btn-primary btn-inverse" role="button" href="{{ '/hard-deploy/' | prepend: site.baseurl }}">How to</a></p>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+            <i class="fa fa-files-o fa-5x"></i>
+
+            <h2>Generate VDoc classes </h2>
+
+            <p>Call a VDoc to build your utilities classes for a project.</p>
+
+            <p><a class="btn btn-primary btn-inverse" role="button" href="{{ '/generate-classes/' | prepend: site.baseurl }}">How to</a></p>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+            <i class="fa fa-cloud-upload fa-5x"></i>
+
+            <h2>Deploy to Nexus</h2>
+
+            <p>Help you to deploy VDoc jar's to Nexus</p>
+
+            <p><a class="btn btn-primary btn-inverse" role="button" href="{{ '/deploy-to-nexus/' | prepend: site.baseurl }}">How to</a></p>
+        </div>
+    </div>
+
+    <div class="raw">
+        <hr class="half-rule">
+        <p class="lead">VDoc maven plugin is open source. It's hosted, developed, and maintained on GitHub.</p>
+        <p><a class="btn btn-primary btn-inverse btn-lg" role="button" href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}">View the GitHub project</a></p>
+    </div>
 
 </div>
