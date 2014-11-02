@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.vdoc.maven.plugin.jaxb.beans.generator;
 
@@ -10,12 +10,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author famaridon
- *
  */
 @XmlRootElement(name = "get")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ResourceDefinitionGeneratorQuery
-{
+public class ResourceDefinitionGeneratorQuery {
 
 	public static final String EXPORT_PACKAGE = "exportPackage";
 	public static final String USED_SUB_PACKAGE_BY_TYPE = "usedSubPackageByCatalogType";
@@ -25,21 +23,19 @@ public class ResourceDefinitionGeneratorQuery
 
 	/**
 	 * Gets the {@link com.vdoc.maven.plugin.jaxb.beans.generator.ResourceDefinitionGeneratorQuery#header}.
-	 * 
+	 *
 	 * @return {@link com.vdoc.maven.plugin.jaxb.beans.generator.ResourceDefinitionGeneratorQuery#header}
 	 */
-	public Header getHeader()
-	{
+	public Header getHeader() {
 		return this.header;
 	}
 
 	/**
 	 * Sets the {@link com.vdoc.maven.plugin.jaxb.beans.generator.ResourceDefinitionGeneratorQuery#header}.
-	 * 
+	 *
 	 * @param header the {@link com.vdoc.maven.plugin.jaxb.beans.generator.ResourceDefinitionGeneratorQuery#header} to set
 	 */
-	public void setHeader(Header header)
-	{
+	public void setHeader(Header header) {
 		this.header = header;
 	}
 

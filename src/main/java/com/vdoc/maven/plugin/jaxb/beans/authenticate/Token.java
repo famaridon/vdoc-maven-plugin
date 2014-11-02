@@ -5,18 +5,15 @@ import javax.xml.bind.annotation.XmlAttribute;
 /**
  * Created by famaridon on 20/05/2014.
  */
-public class Token
-{
+public class Token {
 	protected String key;
 
 	@XmlAttribute
-	public String getKey()
-	{
+	public String getKey() {
 		return key;
 	}
 
-	public void setKey(String key)
-	{
+	public void setKey(String key) {
 		this.key = key;
 	}
 }

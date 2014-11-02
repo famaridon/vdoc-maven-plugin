@@ -2,19 +2,15 @@ package com.vdoc.maven.plugin.beans;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by famaridon on 30/06/2014.
  */
-public class DeployFileConfiguration
-{
+public class DeployFileConfiguration {
 
 	// Required Parameters
 
@@ -43,7 +39,7 @@ public class DeployFileConfiguration
 	 * Add classifier to the artifact
 	 * User property is: classifier.
 	 */
-	protected String classifier =  null;
+	protected String classifier = null;
 
 	/**
 	 * A comma separated list of classifiers for each of the extra side artifacts to deploy. If there is a mis-match in the number of entries in files or types, then an error will be raised.
@@ -139,21 +135,19 @@ public class DeployFileConfiguration
 	 * Version of the artifact to be deployed. Retrieved from POM file if specified.
 	 * User property is: version.
 	 */
-	protected  String version = null;
+	protected String version = null;
 
-	public DeployFileConfiguration(File file, String repositoryId)
-	{
+	public DeployFileConfiguration(File file, String repositoryId) {
 		this.file = file;
 		this.repositoryId = repositoryId;
 	}
 
-	public List<String> toCmd()
-	{
+	public List<String> toCmd() {
 		List<String> strings = new ArrayList<>(2);
 
-		Validate.notNull(this.file,"file is mandatory parameter.");
+		Validate.notNull(this.file, "file is mandatory parameter.");
 		this.appendCmdFile(strings, "file", this.file);
-		Validate.notEmpty(this.repositoryId,"repositoryId is mandatory parameter.");
+		Validate.notEmpty(this.repositoryId, "repositoryId is mandatory parameter.");
 		this.appendCmdString(strings, "repositoryId", repositoryId);
 
 		// Optional Parameters
@@ -178,199 +172,159 @@ public class DeployFileConfiguration
 		return strings;
 	}
 
-	protected void appendCmdString(List<String> strings, String parameterName, String value)
-	{
-		if( StringUtils.isNotEmpty(value))
-		{
-			strings.add("-D"+parameterName+"="+value);
+	protected void appendCmdString(List<String> strings, String parameterName, String value) {
+		if (StringUtils.isNotEmpty(value)) {
+			strings.add("-D" + parameterName + "=" + value);
 		}
 	}
 
-	protected void appendCmdFile(List<String> strings, String parameterName, File value)
-	{
-		if( value != null)
-		{
-			strings.add("-D"+parameterName+"="+value.getAbsolutePath());
+	protected void appendCmdFile(List<String> strings, String parameterName, File value) {
+		if (value != null) {
+			strings.add("-D" + parameterName + "=" + value.getAbsolutePath());
 		}
 	}
 
-	public File getFile()
-	{
+	public File getFile() {
 		return file;
 	}
 
-	public String getRepositoryId()
-	{
+	public String getRepositoryId() {
 		return repositoryId;
 	}
 
-	public String getArtifactId()
-	{
+	public String getArtifactId() {
 		return artifactId;
 	}
 
-	public void setArtifactId(String artifactId)
-	{
+	public void setArtifactId(String artifactId) {
 		this.artifactId = artifactId;
 	}
 
-	public String getClassifier()
-	{
+	public String getClassifier() {
 		return classifier;
 	}
 
-	public void setClassifier(String classifier)
-	{
+	public void setClassifier(String classifier) {
 		this.classifier = classifier;
 	}
 
-	public String getClassifiers()
-	{
+	public String getClassifiers() {
 		return classifiers;
 	}
 
-	public void setClassifiers(String classifiers)
-	{
+	public void setClassifiers(String classifiers) {
 		this.classifiers = classifiers;
 	}
 
-	public String getDescription()
-	{
+	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
-	public String getFiles()
-	{
+	public String getFiles() {
 		return files;
 	}
 
-	public void setFiles(String files)
-	{
+	public void setFiles(String files) {
 		this.files = files;
 	}
 
-	public boolean isGeneratePom()
-	{
+	public boolean isGeneratePom() {
 		return generatePom;
 	}
 
-	public void setGeneratePom(boolean generatePom)
-	{
+	public void setGeneratePom(boolean generatePom) {
 		this.generatePom = generatePom;
 	}
 
-	public String getGroupId()
-	{
+	public String getGroupId() {
 		return groupId;
 	}
 
-	public void setGroupId(String groupId)
-	{
+	public void setGroupId(String groupId) {
 		this.groupId = groupId;
 	}
 
-	public File getJavadoc()
-	{
+	public File getJavadoc() {
 		return javadoc;
 	}
 
-	public void setJavadoc(File javadoc)
-	{
+	public void setJavadoc(File javadoc) {
 		this.javadoc = javadoc;
 	}
 
-	public String getPackaging()
-	{
+	public String getPackaging() {
 		return packaging;
 	}
 
-	public void setPackaging(String packaging)
-	{
+	public void setPackaging(String packaging) {
 		this.packaging = packaging;
 	}
 
-	public File getPomFile()
-	{
+	public File getPomFile() {
 		return pomFile;
 	}
 
-	public void setPomFile(File pomFile)
-	{
+	public void setPomFile(File pomFile) {
 		this.pomFile = pomFile;
 	}
 
-	public int getRetryFailedDeploymentCount()
-	{
+	public int getRetryFailedDeploymentCount() {
 		return retryFailedDeploymentCount;
 	}
 
-	public void setRetryFailedDeploymentCount(int retryFailedDeploymentCount)
-	{
+	public void setRetryFailedDeploymentCount(int retryFailedDeploymentCount) {
 		this.retryFailedDeploymentCount = retryFailedDeploymentCount;
 	}
 
-	public File getSources()
-	{
+	public File getSources() {
 		return sources;
 	}
 
-	public void setSources(File sources)
-	{
+	public void setSources(File sources) {
 		this.sources = sources;
 	}
 
-	public String getTypes()
-	{
+	public String getTypes() {
 		return types;
 	}
 
-	public void setTypes(String types)
-	{
+	public void setTypes(String types) {
 		this.types = types;
 	}
 
-	public boolean isUniqueVersion()
-	{
+	public boolean isUniqueVersion() {
 		return uniqueVersion;
 	}
 
-	public void setUniqueVersion(boolean uniqueVersion)
-	{
+	public void setUniqueVersion(boolean uniqueVersion) {
 		this.uniqueVersion = uniqueVersion;
 	}
 
-	public boolean isUpdateReleaseInfo()
-	{
+	public boolean isUpdateReleaseInfo() {
 		return updateReleaseInfo;
 	}
 
-	public void setUpdateReleaseInfo(boolean updateReleaseInfo)
-	{
+	public void setUpdateReleaseInfo(boolean updateReleaseInfo) {
 		this.updateReleaseInfo = updateReleaseInfo;
 	}
 
-	public String getUrl()
-	{
+	public String getUrl() {
 		return url;
 	}
 
-	public void setUrl(String url)
-	{
+	public void setUrl(String url) {
 		this.url = url;
 	}
 
-	public String getVersion()
-	{
+	public String getVersion() {
 		return version;
 	}
 
-	public void setVersion(String version)
-	{
+	public void setVersion(String version) {
 		this.version = version;
 	}
 

@@ -7,34 +7,28 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Created by famaridon on 19/05/2014.
  */
 @XmlRootElement(name = "authenticate")
-public class AuthenticateQuery
-{
-	protected  Header header = new Header();
+public class AuthenticateQuery {
+	protected Header header = new Header();
 	protected Body body;
 
-	public AuthenticateQuery()
-	{
+	public AuthenticateQuery() {
 	}
 
 	@XmlElement
-	public Header getHeader()
-	{
+	public Header getHeader() {
 		return header;
 	}
 
-	public void setHeader(Header header)
-	{
+	public void setHeader(Header header) {
 		this.header = header;
 	}
 
 	@XmlElement
-	public Body getBody()
-	{
+	public Body getBody() {
 		return body;
 	}
 
-	public void setBody(Body body)
-	{
+	public void setBody(Body body) {
 		this.body = body;
 	}
 }

@@ -6,27 +6,22 @@ import org.apache.maven.plugin.logging.Log;
 /**
  * Created by famaridon on 06/07/2014.
  */
-public class MojoLoggerAdapter implements GobblerAdapter
-{
+public class MojoLoggerAdapter implements GobblerAdapter {
 	protected Log log;
 	protected String level;
 
-	public MojoLoggerAdapter(Log log)
-	{
-		this(log,"debug");
+	public MojoLoggerAdapter(Log log) {
+		this(log, "debug");
 	}
 
-	public MojoLoggerAdapter(Log log, String level)
-	{
+	public MojoLoggerAdapter(Log log, String level) {
 		this.log = log;
-		this.level =level;
+		this.level = level;
 	}
 
 	@Override
-	public void println(String message)
-	{
-		switch (level)
-		{
+	public void println(String message) {
+		switch (level) {
 			case "debug":
 				log.debug(message);
 				break;
