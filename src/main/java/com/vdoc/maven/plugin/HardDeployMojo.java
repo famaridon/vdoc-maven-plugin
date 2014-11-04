@@ -20,21 +20,27 @@ public class HardDeployMojo extends AbstractVDocMojo {
 	protected File vdocEAR;
 
 	/**
+	 * the VDoc home folder.
+	 */
+	@Parameter(required = true)
+	protected File vdocHome;
+
+	/**
 	 * custom folder must be updated
 	 */
-	@Parameter(property = "with.custom", required = true, defaultValue = "true", alias = "withCustom")
+	@Parameter(required = true, defaultValue = "true")
 	protected boolean withCustom;
 
 	/**
 	 * test jar must be deployed
 	 */
-	@Parameter(property = "include.test", required = false, defaultValue = "true", alias = "includeTest")
+	@Parameter(required = false, defaultValue = "true")
 	protected boolean includeTest;
 
 	/**
 	 * source jar must be deployed
 	 */
-	@Parameter(property = "include.source", required = false, defaultValue = "false", alias = "includeSource")
+	@Parameter(required = false, defaultValue = "false")
 	protected boolean includeSource;
 
 
@@ -42,7 +48,7 @@ public class HardDeployMojo extends AbstractVDocMojo {
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
 		this.vdocEAR = new File(this.vdocHome, "/JBoss/server/all/deploy/vdoc.ear/");
-		File jar = getJarFile(jarDirectory, jarName, null);
+		File jar = getJarFile(buildDirectory, jarName, null);
 		try {
 			// copy jars
 			if (jar.exists()) {
@@ -53,14 +59,14 @@ public class HardDeployMojo extends AbstractVDocMojo {
 
 				if (this.includeTest) {
 
-					File testJar = getJarFile(jarDirectory, jarName, "test");
+					File testJar = getJarFile(buildDirectory, jarName, "test");
 					getLog().info(String.format("Copy test jar %1$s to %2$s", testJar.getAbsolutePath(), libDirectory.getAbsolutePath()));
 					FileUtils.copyFileToDirectory(testJar, libDirectory);
 				}
 
 				if (this.includeSource) {
 
-					File sourceJar = getJarFile(jarDirectory, jarName, "source");
+					File sourceJar = getJarFile(buildDirectory, jarName, "source");
 					getLog().info(String.format("Copy source jar %1$s to %2$s", sourceJar.getAbsolutePath(), libDirectory.getAbsolutePath()));
 					FileUtils.copyFileToDirectory(sourceJar, libDirectory);
 

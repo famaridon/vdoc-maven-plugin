@@ -32,26 +32,18 @@ public abstract class AbstractVDocMojo extends AbstractMojo {
 
 	@Component
 	protected BuildPluginManager pluginManager;
-	/**
-	 * the VDoc home folder.
-	 */
-	@Parameter(property = "vdoc.home", required = true, alias = "vdocHome")
-	protected File vdocHome;
+
 	/**
 	 * Name of the generated JAR.
 	 */
-	@Parameter(alias = "jarName", property = "jar.finalName", defaultValue = "${project.build.finalName}")
+	@Parameter(defaultValue = "${project.build.finalName}")
 	protected String jarName;
 	/**
 	 * Directory containing the generated JAR.
 	 */
 	@Parameter(defaultValue = "${project.build.directory}", required = true)
-	protected File sourceCustom;
-	/**
-	 * Directory containing the generated JAR.
-	 */
-	@Parameter(defaultValue = "${project.build.directory}", required = true)
-	protected File jarDirectory;
+	protected File buildDirectory;
+
 	@Parameter
 	private XmlPlexusConfiguration configuration;
 
