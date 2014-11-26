@@ -36,11 +36,11 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 	private String setupName;
 	@Parameter(required = true, defaultValue = "${project.build.directory}/lib")
 	private File libFolder;
-	@Parameter(required = true, defaultValue = "false")
+	@Parameter(defaultValue = "false")
 	private boolean includeTest;
-	@Parameter(required = true, defaultValue = "false")
+	@Parameter(defaultValue = "false")
 	private boolean includeJavadoc;
-	@Parameter(required = true, defaultValue = "false")
+	@Parameter(defaultValue = "false")
 	private boolean includeSource;
 
 
