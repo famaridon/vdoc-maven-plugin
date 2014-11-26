@@ -26,6 +26,7 @@ import java.io.IOException;
 @Mojo(name = "create-setup", threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class CreateSetupMojo extends AbstractVDocMojo {
 
+	public static final String BASE_ZIP_FOLDER = "";
 	/**
 	 * Name of the generated JAR.
 	 */
@@ -74,25 +75,25 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 				if (customFolder.isDirectory()) {
 					File[] customFolders = new File(r.getDirectory() + "/../custom/").listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
 					for (File f : customFolders) {
-						this.compressDirectory(output, f, "/");
+						this.compressDirectory(output, f, BASE_ZIP_FOLDER);
 					}
 				}
 			}
-			this.compressDirectory(output, this.getJarFile(buildDirectory, jarName, null), "/lib/");
+			this.compressDirectory(output, this.getJarFile(buildDirectory, jarName, null), "lib/");
 			if (this.libFolder.exists()) {
-				this.compressDirectory(output, libFolder, "/");
+				this.compressDirectory(output, libFolder, BASE_ZIP_FOLDER);
 			}
 
 			if (this.includeTest) {
-				this.compressDirectory(output, this.getJarFile(buildDirectory, jarName, "test"), "/lib/");
+				this.compressDirectory(output, this.getJarFile(buildDirectory, jarName, "test"), "lib/");
 			}
 
 			if (this.includeSource) {
-				this.compressDirectory(output, this.getJarFile(buildDirectory, jarName, "source"), "/lib/");
+				this.compressDirectory(output, this.getJarFile(buildDirectory, jarName, "source"), "lib/");
 			}
 
 			if (this.includeJavadoc) {
-				this.compressDirectory(output, this.getJarFile(buildDirectory, jarName, "javadoc"), "/lib/");
+				this.compressDirectory(output, this.getJarFile(buildDirectory, jarName, "javadoc"), "lib/");
 			}
 		}
 
@@ -104,22 +105,22 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 				if (userAppsCustomFolder.isDirectory()) {
 					File[] customFolders = new File(r.getDirectory() + "/../user_apps_custom/").listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
 					for (File f : customFolders) {
-						this.compressDirectory(output, f, "/custom/");
+						this.compressDirectory(output, f, "custom/");
 					}
 				}
 			}
-			this.compressDirectory(output, vdocAppOutput, "/apps/");
+			this.compressDirectory(output, vdocAppOutput, "apps/");
 
 			File fix = new File(this.project.getBasedir(), "fix");
 			if (fix.exists()) {
 				getLog().debug("add fix folder");
-				this.compressDirectory(output, fix, "/fix/");
+				this.compressDirectory(output, fix, "fix/");
 			}
 
 			File documentation = new File(this.project.getBasedir(), "documentation");
 			if (documentation.exists()) {
 				getLog().debug("add documentation folder");
-				this.compressDirectory(output, documentation, "/documentation/");
+				this.compressDirectory(output, documentation, "documentation/");
 			}
 		}
 
