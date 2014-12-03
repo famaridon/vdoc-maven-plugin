@@ -66,7 +66,7 @@
                     <plugin>
                         <groupId>com.vdoc.maven</groupId>
                         <artifactId>vdoc-maven-plugin</artifactId>
-                        <version>1.7-SNAPSHOT</version>
+                        <version>${r"${vdoc-maven-plugin.version}"}</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -84,8 +84,8 @@
                     <plugin>
                         <groupId>com.vdoc.maven</groupId>
                         <artifactId>vdoc-maven-plugin</artifactId>
-                        <version>1.7-SNAPSHOT</version>
-                    </plugin>
+                        <version>${r"${vdoc-maven-plugin.version}"}</version>
+					</plugin>
                     <!-- load the home.properties -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>

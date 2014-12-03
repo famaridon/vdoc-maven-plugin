@@ -25,6 +25,7 @@
     <vdoc.version>${targetVersion}</vdoc.version>
     <project.build.sourceEncoding>cp1252</project.build.sourceEncoding>
     <skipTests>true</skipTests>
+    <vdoc-maven-plugin.version>1.7-SNAPSHOT</vdoc-maven-plugin.version>
 </properties>
 
 <dependencies>
@@ -201,6 +202,7 @@
             <plugin>
                 <groupId>com.vdoc.maven</groupId>
                 <artifactId>vdoc-maven-plugin</artifactId>
+                <version>${r"${vdoc-maven-plugin.version}"}</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
