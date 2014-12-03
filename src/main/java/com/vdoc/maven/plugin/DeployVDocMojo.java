@@ -89,12 +89,13 @@ public class DeployVDocMojo extends AbstractMojo {
 		deployFiles(earFiles);
 		File[] earLibFiles = new File(earFolder, "lib").listFiles((FileFilter) fileFilter);
 		deployFiles(earLibFiles);
-		buildFullPom();
+		buildParentPom("sdk");
+		buildParentPom("sdk.advanced");
 
 
 	}
 
-	protected void buildFullPom() throws MojoExecutionException {
+	protected void buildParentPom(String artifactId) throws MojoExecutionException {
 		getLog().info("Create the full pom.");
 		try {
 			// build the full pom
@@ -122,17 +123,18 @@ public class DeployVDocMojo extends AbstractMojo {
 			cfg.setIncompatibleImprovements(new Version(2, 3, 20));  // FreeMarker 2.3.20
 
 			// copy the template from jar freemaker can't read stream
-			getLog().debug("get the template localy.");
+			getLog().debug("get the sdk template localy.");
+			String ftlName = artifactId + ".ftl";
 			try (
-					InputStream input = getClass().getClassLoader().getResourceAsStream("vdoc.sdk.full.ftl");
-					FileOutputStream outputStream = new FileOutputStream(new File(this.mavenHome, "vdoc.sdk.full.ftl"));
+					InputStream input = getClass().getClassLoader().getResourceAsStream(ftlName);
+					FileOutputStream outputStream = new FileOutputStream(new File(this.mavenHome, ftlName));
 			) {
 				IOUtils.copy(input, outputStream);
 				outputStream.flush();
 			}
 
 			getLog().debug("Parse the  ftl.");
-			Template temp = cfg.getTemplate("vdoc.sdk.full.ftl");
+			Template temp = cfg.getTemplate(ftlName);
 
 			File pom = new File(this.mavenHome, "pom.xml");
 			try (Writer out = new FileWriter(pom);) {
@@ -141,12 +143,13 @@ public class DeployVDocMojo extends AbstractMojo {
 			}
 
 			DeployFileConfiguration deployFileConfiguration = new DeployFileConfiguration(pom, repositoryId);
-			deployFileConfiguration.setArtifactId("vdoc.sdk.full");
-			deployFileConfiguration.setGroupId(targetGroupId);
+			deployFileConfiguration.setArtifactId(artifactId);
+			deployFileConfiguration.setGroupId("com.vdoc.engineering");
 			deployFileConfiguration.setVersion(targetVersion);
 			deployFileConfiguration.setUniqueVersion(uniqueVersion);
 			deployFileConfiguration.setUrl(repositoryUrl);
 			deployFileConfiguration.setPackaging("pom");
+			this.deployFile(deployFileConfiguration);
 
 
 		} catch (IOException | TemplateException e) {
@@ -170,7 +173,7 @@ public class DeployVDocMojo extends AbstractMojo {
 			getLog().debug("search javadoc");
 			try {
 				this.splitJar(deployFileConfiguration, jar);
-
+				dependencies.add(deployFileConfiguration);
 				deployFile(deployFileConfiguration);
 
 			} finally {
@@ -213,7 +216,7 @@ public class DeployVDocMojo extends AbstractMojo {
 			if (code != 0) {
 				throw new MojoExecutionException("" + deployFileConfiguration.toCmd().toString());
 			}
-			dependencies.add(deployFileConfiguration);
+
 		} catch (IOException | InterruptedException e) {
 			throw new MojoExecutionException(e.getMessage());
 		}

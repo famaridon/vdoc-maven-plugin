@@ -29,20 +29,24 @@ public class HardDeployMojo extends AbstractVDocMojo {
 	 * custom folder must be updated
 	 */
 	@Parameter(required = true, defaultValue = "true")
+	protected boolean deployDependencies;
+	/**
+	 * custom folder must be updated
+	 */
+	@Parameter(required = true, defaultValue = "true")
 	protected boolean withCustom;
-
 	/**
 	 * test jar must be deployed
 	 */
 	@Parameter(required = false, defaultValue = "true")
 	protected boolean includeTest;
-
 	/**
 	 * source jar must be deployed
 	 */
 	@Parameter(required = false, defaultValue = "false")
 	protected boolean includeSource;
-
+	@Parameter(required = true, defaultValue = "${project.build.directory}/lib")
+	private File dependenciesFolder;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -73,21 +77,29 @@ public class HardDeployMojo extends AbstractVDocMojo {
 				}
 			}
 
-			// copy custom
-			File targetCustomFolder = new File(vdocEAR, "vdoc.war/WEB-INF/storage/custom/");
-			File targetWebappFolder = new File(vdocEAR, "vdoc.war/");
-			for (String sourceRootPath : this.project.getCompileSourceRoots()) {
+			if (this.withCustom) {
+				// copy custom
+				File targetCustomFolder = new File(vdocEAR, "vdoc.war/WEB-INF/storage/custom/");
+				File targetWebappFolder = new File(vdocEAR, "vdoc.war/");
+				for (String sourceRootPath : this.project.getCompileSourceRoots()) {
 
-				File sourceRoot = new File(sourceRootPath);
-				File customFolder = new File(sourceRoot.getParentFile(), "custom");
-				File customWebappFolder = new File(customFolder, "webapp");
+					File sourceRoot = new File(sourceRootPath);
+					File customFolder = new File(sourceRoot.getParentFile(), "custom");
+					File customWebappFolder = new File(customFolder, "webapp");
 
-				if (customFolder.exists()) {
-					getLog().info(String.format("Copy custom %1$s to %2$s", customFolder.getAbsolutePath(), targetCustomFolder.getAbsolutePath()));
-					FileUtils.copyDirectory(customFolder, targetCustomFolder, notWebAppFolderFileFilter);
-					getLog().info(String.format("Copy webapp %1$s to %2$s", customWebappFolder.getAbsolutePath(), targetWebappFolder.getAbsolutePath()));
-					FileUtils.copyDirectory(customWebappFolder, targetWebappFolder);
+					if (customFolder.exists()) {
+						getLog().info(String.format("Copy custom %1$s to %2$s", customFolder.getAbsolutePath(), targetCustomFolder.getAbsolutePath()));
+						FileUtils.copyDirectory(customFolder, targetCustomFolder, notWebAppFolderFileFilter);
+						getLog().info(String.format("Copy webapp %1$s to %2$s", customWebappFolder.getAbsolutePath(), targetWebappFolder.getAbsolutePath()));
+						FileUtils.copyDirectory(customWebappFolder, targetWebappFolder);
+					}
 				}
+			}
+			if (this.deployDependencies && dependenciesFolder.exists() && dependenciesFolder.isDirectory()) {
+				File vdocEARLib = new File(this.vdocEAR, "lib");
+
+				getLog().info(String.format("Copy %1$s to %2$s", dependenciesFolder.getAbsolutePath(), vdocEARLib.getAbsolutePath()));
+				FileUtils.copyDirectory(dependenciesFolder, vdocEARLib);
 			}
 
 

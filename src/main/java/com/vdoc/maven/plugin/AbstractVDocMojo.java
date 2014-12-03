@@ -4,8 +4,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.BuildPluginManager;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
@@ -30,8 +28,8 @@ public abstract class AbstractVDocMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${session}", required = true, readonly = true)
 	protected MavenSession session;
 
-	@Component
-	protected BuildPluginManager pluginManager;
+//	@Component
+//	protected BuildPluginManager pluginManager;
 
 	/**
 	 * Name of the generated JAR.
