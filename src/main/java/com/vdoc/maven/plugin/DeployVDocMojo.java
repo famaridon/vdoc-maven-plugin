@@ -200,7 +200,11 @@ public class DeployVDocMojo extends AbstractMojo {
 		try {
 			List<String> cmd = deployFileConfiguration.toCmd();
 			cmd.add(0, "deploy:deploy-file");
-			cmd.add(0, new File(this.mavenHome, "/bin/mvn.bat").getAbsolutePath());
+			cmd.add(0, "-X");
+			cmd.add(0, new File(this.mavenHome, "/bin/mvn").getAbsolutePath());
+
+			getLog().info(cmd.toString());
+
 			ProcessBuilder builder = new ProcessBuilder(cmd);
 			Process process = builder.start();
 
