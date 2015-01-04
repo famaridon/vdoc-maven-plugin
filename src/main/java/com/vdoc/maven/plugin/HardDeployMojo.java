@@ -17,96 +17,105 @@ import java.io.IOException;
 @Mojo(name = "hard-deploy", threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class HardDeployMojo extends AbstractVDocMojo {
 
-	protected File vdocEAR;
+    protected File vdocEAR;
 
-	/**
-	 * the VDoc home folder.
-	 */
-	@Parameter(required = true)
-	protected File vdocHome;
+    /**
+     * the VDoc home folder.
+     */
+    @Parameter(required = true)
+    protected File vdocHome;
 
-	/**
-	 * custom folder must be updated
-	 */
-	@Parameter(required = true, defaultValue = "true")
-	protected boolean deployDependencies;
-	/**
-	 * custom folder must be updated
-	 */
-	@Parameter(required = true, defaultValue = "true")
-	protected boolean withCustom;
-	/**
-	 * test jar must be deployed
-	 */
-	@Parameter(required = false, defaultValue = "true")
-	protected boolean includeTest;
-	/**
-	 * source jar must be deployed
-	 */
-	@Parameter(required = false, defaultValue = "false")
-	protected boolean includeSource;
-	@Parameter(required = true, defaultValue = "${project.build.directory}/lib")
-	private File dependenciesFolder;
+    /**
+     * custom folder must be updated
+     */
+    @Parameter(required = true, defaultValue = "true")
+    protected boolean deployDependencies;
+    /**
+     * custom folder must be updated
+     */
+    @Parameter(required = true, defaultValue = "true")
+    protected boolean withCustom;
+    /**
+     * test jar must be deployed
+     */
+    @Parameter(required = false, defaultValue = "true")
+    protected boolean includeTest;
+    /**
+     * source jar must be deployed
+     */
+    @Parameter(required = false, defaultValue = "false")
+    protected boolean includeSource;
 
-	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
+    @Parameter(required = true, defaultValue = "${project.build.directory}/lib")
+    private File dependenciesFolder;
 
-		this.vdocEAR = new File(this.vdocHome, "/JBoss/server/all/deploy/vdoc.ear/");
-		File jar = getJarFile(buildDirectory, jarName, null);
-		try {
-			// copy jars
-			if (jar.exists()) {
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
-				File libDirectory = new File(vdocEAR, "lib");
-				getLog().info(String.format("Copy %1$s to %2$s", jar.getAbsolutePath(), libDirectory.getAbsolutePath()));
-				FileUtils.copyFileToDirectory(jar, libDirectory);
+        this.vdocEAR = new File(this.vdocHome, "/JBoss/server/all/deploy/vdoc.ear/");
+        File jar = getJarFile(buildDirectory, jarName, null);
+        try {
+            // copy jars
+            if (jar.exists()) {
 
-				if (this.includeTest) {
+                File libDirectory = new File(vdocEAR, "lib");
+                getLog().info(String.format("Copy %1$s to %2$s", jar.getAbsolutePath(), libDirectory.getAbsolutePath()));
+                FileUtils.copyFileToDirectory(jar, libDirectory);
 
-					File testJar = getJarFile(buildDirectory, jarName, "test");
-					getLog().info(String.format("Copy test jar %1$s to %2$s", testJar.getAbsolutePath(), libDirectory.getAbsolutePath()));
-					FileUtils.copyFileToDirectory(testJar, libDirectory);
-				}
+                if (this.includeTest) {
 
-				if (this.includeSource) {
+                    File testJar = getJarFile(buildDirectory, jarName, "tests");
+                    if (testJar.exists()) {
+                        getLog().info(String.format("Copy test jar %1$s to %2$s", testJar.getAbsolutePath(), libDirectory.getAbsolutePath()));
+                        FileUtils.copyFileToDirectory(testJar, libDirectory);
+                    } else {
+                        getLog().warn("No test jar found!");
+                    }
+                }
 
-					File sourceJar = getJarFile(buildDirectory, jarName, "source");
-					getLog().info(String.format("Copy source jar %1$s to %2$s", sourceJar.getAbsolutePath(), libDirectory.getAbsolutePath()));
-					FileUtils.copyFileToDirectory(sourceJar, libDirectory);
+                if (this.includeSource) {
 
-				}
-			}
+                    File sourceJar = getJarFile(buildDirectory, jarName, "source");
+                    if (sourceJar.exists()) {
+                        getLog().info(String.format("Copy source jar %1$s to %2$s", sourceJar.getAbsolutePath(), libDirectory.getAbsolutePath()));
+                        FileUtils.copyFileToDirectory(sourceJar, libDirectory);
+                    } else {
+                        getLog().warn("No source jar found!");
+                    }
 
-			if (this.withCustom) {
-				// copy custom
-				File targetCustomFolder = new File(vdocEAR, "vdoc.war/WEB-INF/storage/custom/");
-				File targetWebappFolder = new File(vdocEAR, "vdoc.war/");
-				for (String sourceRootPath : this.project.getCompileSourceRoots()) {
+                }
+            }
 
-					File sourceRoot = new File(sourceRootPath);
-					File customFolder = new File(sourceRoot.getParentFile(), "custom");
-					File customWebappFolder = new File(customFolder, "webapp");
+            if (this.withCustom) {
+                // copy custom
+                File targetCustomFolder = new File(vdocEAR, "vdoc.war/WEB-INF/storage/custom/");
+                File targetWebappFolder = new File(vdocEAR, "vdoc.war/");
+                for (String sourceRootPath : this.project.getCompileSourceRoots()) {
 
-					if (customFolder.exists()) {
-						getLog().info(String.format("Copy custom %1$s to %2$s", customFolder.getAbsolutePath(), targetCustomFolder.getAbsolutePath()));
-						FileUtils.copyDirectory(customFolder, targetCustomFolder, notWebAppFolderFileFilter);
-						getLog().info(String.format("Copy webapp %1$s to %2$s", customWebappFolder.getAbsolutePath(), targetWebappFolder.getAbsolutePath()));
-						FileUtils.copyDirectory(customWebappFolder, targetWebappFolder);
-					}
-				}
-			}
-			if (this.deployDependencies && dependenciesFolder.exists() && dependenciesFolder.isDirectory()) {
-				File vdocEARLib = new File(this.vdocEAR, "lib");
+                    File sourceRoot = new File(sourceRootPath);
+                    File customFolder = new File(sourceRoot.getParentFile(), "custom");
+                    File customWebappFolder = new File(customFolder, "webapp");
 
-				getLog().info(String.format("Copy %1$s to %2$s", dependenciesFolder.getAbsolutePath(), vdocEARLib.getAbsolutePath()));
-				FileUtils.copyDirectory(dependenciesFolder, vdocEARLib);
-			}
+                    if (customFolder.exists()) {
+                        getLog().info(String.format("Copy custom %1$s to %2$s", customFolder.getAbsolutePath(), targetCustomFolder.getAbsolutePath()));
+                        FileUtils.copyDirectory(customFolder, targetCustomFolder, notWebAppFolderFileFilter);
+                        getLog().info(String.format("Copy webapp %1$s to %2$s", customWebappFolder.getAbsolutePath(), targetWebappFolder.getAbsolutePath()));
+                        FileUtils.copyDirectory(customWebappFolder, targetWebappFolder);
+                    }
+                }
+            }
+            if (this.deployDependencies && dependenciesFolder.exists() && dependenciesFolder.isDirectory()) {
+                File vdocEARLib = new File(this.vdocEAR, "lib");
+
+                getLog().info(String.format("Copy %1$s to %2$s", dependenciesFolder.getAbsolutePath(), vdocEARLib.getAbsolutePath()));
+                FileUtils.copyDirectory(dependenciesFolder, vdocEARLib);
+            }
 
 
-		} catch (IOException e) {
-			throw new MojoFailureException("Deploy fail :", e);
-		}
+        } catch (IOException e) {
+            throw new MojoFailureException("Deploy fail :", e);
+        }
 
-	}
+    }
 
 }
