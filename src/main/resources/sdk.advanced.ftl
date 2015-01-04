@@ -42,6 +42,7 @@
     </build>
 
     <profiles>
+
         <profile>
             <!-- enable the setup build -->
             <id>packager</id>
@@ -71,6 +72,7 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
             <!-- enable the hard deploy (require 2 next) -->
             <id>deployer</id>
@@ -87,26 +89,16 @@
                                     <goal>hard-deploy</goal>
                                 </goals>
                                 <configuration>
-                                    <includeTest>false</includeTest>
+                                    <includeTest>true</includeTest>
                                     <vdocHome>${r"${VDOC_HOME}"}</vdocHome>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
-                    <!-- enable the APPS packaging -->
-                    <plugin>
-                        <groupId>com.vdoc.maven</groupId>
-                        <artifactId>vdoc-maven-plugin</artifactId>
-                        <version>${r"${vdoc-maven-plugin.version}"}</version>
-					</plugin>
-                    <!-- load the home.properties -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>properties-maven-plugin</artifactId>
-                    </plugin>
                 </plugins>
             </build>
         </profile>
+
     </profiles>
 
 </project>
