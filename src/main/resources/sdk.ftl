@@ -200,23 +200,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.vdoc.maven</groupId>
-                <artifactId>vdoc-maven-plugin</artifactId>
-                <version>${r"${vdoc-maven-plugin.version}"}</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>create-setup</goal>
-                        </goals>
-                        <configuration>
-                            <setupName>${r"${project.artifactId}-${project.version} for VDoc${project.parent.version}"}</setupName>
-                            <packagingType>APPS</packagingType>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>properties-maven-plugin</artifactId>
                 <version>1.0-alpha-2</version>

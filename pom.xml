@@ -6,7 +6,7 @@
 
     <groupId>com.vdoc.maven</groupId>
     <artifactId>vdoc-maven-plugin</artifactId>
-    <version>1.7-SNAPSHOT</version>
+    <version>14.1.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <dependencies>
@@ -39,6 +39,11 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>[2.4,)</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.1</version>
         </dependency>
 
         <dependency>
