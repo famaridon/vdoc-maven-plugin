@@ -63,7 +63,7 @@
                                     <goal>create-setup</goal>
                                 </goals>
                                 <configuration>
-                                    <setupName>${r"${project.artifactId}-${project.version} for VDoc${project.parent.version}"}</setupName>
+                                    <setupName>${r"${project.artifactId}-${project.version} for VDoc${vdoc.version}"}</setupName>
                                     <packagingType>APPS</packagingType>
                                 </configuration>
                             </execution>
