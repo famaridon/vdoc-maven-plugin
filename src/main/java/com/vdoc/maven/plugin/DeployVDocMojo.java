@@ -1,6 +1,7 @@
 package com.vdoc.maven.plugin;
 
 import com.vdoc.maven.plugin.beans.DeployFileConfiguration;
+import com.vdoc.maven.plugin.utils.OSUtils;
 import com.vdoc.maven.plugin.utils.StreamGobbler;
 import com.vdoc.maven.plugin.utils.impl.MojoLoggerAdapter;
 import freemarker.ext.beans.BeansWrapper;
@@ -17,6 +18,7 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -43,6 +45,8 @@ public class DeployVDocMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${session}", required = true)
 	protected MavenSession session;
 
+	protected PluginDescriptor pluginDescriptor;
+
 	@Parameter(property = "earFolder", required = true)
 	protected File earFolder;
 
@@ -63,17 +67,27 @@ public class DeployVDocMojo extends AbstractMojo {
 	@Parameter(property = "mavenHome", required = false)
 	protected File mavenHome;
 
+	/**
+	 * set to true for only deploy parents pom
+	 */
+	@Parameter(property = "onlyParentPom", required = false, defaultValue = "false")
+	protected boolean onlyParentPom;
+
 	protected List<DeployFileConfiguration> dependencies = new ArrayList<>();
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		if (this.mavenHome == null) {
+		this.pluginDescriptor = ((PluginDescriptor) getPluginContext().get("pluginDescriptor"));
+
+		if (this.mavenHome == null )
+		{
 			String mavenEnv = System.getenv("M2_HOME");
 			Validate.notEmpty(mavenEnv, "M2_HOME is not set you can used the maven-home configuration!");
 			mavenHome = new File(mavenEnv);
 		}
 
-		if (!mavenHome.exists()) {
+		if (!mavenHome.exists() )
+		{
 			throw new IllegalArgumentException("maven home (M2_HOME or maven-home configuration) is set to bad location : " + mavenHome.getAbsolutePath());
 		}
 
@@ -86,18 +100,21 @@ public class DeployVDocMojo extends AbstractMojo {
 		fileFilter.addFileFilter(new SuffixFileFilter(".jar"));
 
 		File[] earFiles = earFolder.listFiles((FileFilter) fileFilter);
+		getLog().info("Scan the vdoc.ear folder");
 		deployFiles(earFiles);
+		getLog().info("Scan the vdoc.ear/lib folder");
 		File[] earLibFiles = new File(earFolder, "lib").listFiles((FileFilter) fileFilter);
 		deployFiles(earLibFiles);
+
 		buildParentPom("sdk");
 		buildParentPom("sdk.advanced");
-
 
 	}
 
 	protected void buildParentPom(String artifactId) throws MojoExecutionException {
-		getLog().info("Create the full pom.");
-		try {
+		getLog().info("Create the " + artifactId + " pom file");
+		try
+		{
 			// build the full pom
 			Configuration cfg = new Configuration();
 
@@ -128,7 +145,8 @@ public class DeployVDocMojo extends AbstractMojo {
 			try (
 					InputStream input = getClass().getClassLoader().getResourceAsStream(ftlName);
 					FileOutputStream outputStream = new FileOutputStream(new File(this.mavenHome, ftlName));
-			) {
+			)
+			{
 				IOUtils.copy(input, outputStream);
 				outputStream.flush();
 			}
@@ -137,7 +155,8 @@ public class DeployVDocMojo extends AbstractMojo {
 			Template temp = cfg.getTemplate(ftlName);
 
 			File pom = new File(this.mavenHome, "pom.xml");
-			try (Writer out = new FileWriter(pom);) {
+			try (Writer out = new FileWriter(pom);)
+			{
 				temp.process(this, out);
 				out.flush();
 			}
@@ -149,19 +168,24 @@ public class DeployVDocMojo extends AbstractMojo {
 			deployFileConfiguration.setUniqueVersion(uniqueVersion);
 			deployFileConfiguration.setUrl(repositoryUrl);
 			deployFileConfiguration.setPackaging("pom");
-			this.deployFile(deployFileConfiguration);
+			this.deployFileToNexus(deployFileConfiguration);
+
+			pom.renameTo(new File(this.mavenHome, artifactId + ".xml"));
 
 
-		} catch (IOException | TemplateException e) {
+		} catch (IOException | TemplateException e)
+		{
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
 	}
 
 	protected void deployFiles(File[] vdocFiles) throws MojoExecutionException {
-		if (vdocFiles == null) {
+		if (vdocFiles == null )
+		{
 			return;
 		}
-		for (File jar : vdocFiles) {
+		for (File jar : vdocFiles)
+		{
 			getLog().debug("parsing file : " + jar.getName());
 			DeployFileConfiguration deployFileConfiguration = new DeployFileConfiguration(jar, repositoryId);
 			deployFileConfiguration.setArtifactId(StringUtils.substringBefore(FilenameUtils.getBaseName(jar.getName()), "-suite"));
@@ -171,18 +195,24 @@ public class DeployVDocMojo extends AbstractMojo {
 			deployFileConfiguration.setUrl(repositoryUrl);
 
 			getLog().debug("search javadoc");
-			try {
+			try
+			{
 				this.splitJar(deployFileConfiguration, jar);
 				dependencies.add(deployFileConfiguration);
-				deployFile(deployFileConfiguration);
+				if (!this.onlyParentPom) {
+					deployFileToNexus(deployFileConfiguration);
+				}
 
-			} finally {
+			} finally
+			{
 				getLog().debug("delete javadoc jar");
-				if (deployFileConfiguration.getJavadoc() != null) {
+				if (deployFileConfiguration.getJavadoc() != null)
+				{
 					deployFileConfiguration.getJavadoc().delete();
 				}
 
-				if (deployFileConfiguration.getSources() != null) {
+				if (deployFileConfiguration.getSources() != null)
+				{
 					deployFileConfiguration.getSources().delete();
 				}
 			}
@@ -195,13 +225,15 @@ public class DeployVDocMojo extends AbstractMojo {
 	 * @param deployFileConfiguration
 	 * @throws MojoExecutionException
 	 */
-	protected void deployFile(DeployFileConfiguration deployFileConfiguration) throws MojoExecutionException {
+	protected void deployFileToNexus(DeployFileConfiguration deployFileConfiguration) throws MojoExecutionException
+	{
 		System.out.println(deployFileConfiguration.toCmd());
-		try {
+		try
+		{
 			List<String> cmd = deployFileConfiguration.toCmd();
 			cmd.add(0, "deploy:deploy-file");
 			cmd.add(0, "-X");
-			cmd.add(0, new File(this.mavenHome, "/bin/mvn").getAbsolutePath());
+			cmd.add(0, new File(this.mavenHome, "/bin/mvn" + (OSUtils.isWindows() ? ".bat" : "")).getAbsolutePath());
 
 			getLog().info(cmd.toString());
 
@@ -217,34 +249,41 @@ public class DeployVDocMojo extends AbstractMojo {
 			errorGobbler.start();
 
 			int code = process.waitFor();
-			if (code != 0) {
+			if (code != 0)
+			{
 				throw new MojoExecutionException("" + deployFileConfiguration.toCmd().toString());
 			}
 
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException | InterruptedException e)
+		{
 			throw new MojoExecutionException(e.getMessage());
 		}
 	}
 
-	protected void copyEntry(JarInputStream jarInputStream, JarOutputStream javadocOutputStream, ZipEntry archiveEntry, ZipEntry newEntry) throws IOException {
+	protected void copyEntry(JarInputStream jarInputStream, JarOutputStream javadocOutputStream, ZipEntry archiveEntry, ZipEntry newEntry) throws IOException
+	{
 		javadocOutputStream.putNextEntry(newEntry);
-		if (archiveEntry.getSize() > 0) {
+		if (archiveEntry.getSize() > 0 )
+		{
 			newEntry.setSize(archiveEntry.getSize());
 			byte[] bytes = new byte[2048];
 			int read = 0;
-			while ((read += jarInputStream.read(bytes, 0, nextRead(archiveEntry.getSize(), read, bytes.length))) < archiveEntry.getSize()) {
+			while ((read += jarInputStream.read(bytes, 0, nextRead(archiveEntry.getSize(), read, bytes.length))) < archiveEntry.getSize())
+			{
 				javadocOutputStream.write(bytes);
 			}
 		}
 		javadocOutputStream.closeEntry();
 	}
 
-	protected int nextRead(long total, int read, int buffer) {
+	protected int nextRead(long total, int read, int buffer)
+	{
 		int next = (int) total - read;
 		return next > buffer ? buffer : next;
 	}
 
-	protected void splitJar(DeployFileConfiguration deployFileConfiguration, File jar) throws MojoExecutionException {
+	protected void splitJar(DeployFileConfiguration deployFileConfiguration, File jar) throws MojoExecutionException
+	{
 		File javadoc = new File(jar.getParentFile(), FilenameUtils.getBaseName(jar.getName()) + "-javadoc.jar");
 		File source = new File(jar.getParentFile(), FilenameUtils.getBaseName(jar.getName()) + "-source.jar");
 
@@ -256,21 +295,25 @@ public class DeployVDocMojo extends AbstractMojo {
 
 			 FileOutputStream sourceFileOutputStream = new FileOutputStream(source);
 			 JarOutputStream sourceOutputStream = new JarOutputStream(sourceFileOutputStream);
-		) {
+		)
+		{
 
 			ZipEntry archiveEntry;
 			while ((archiveEntry = jarInputStream.getNextEntry()) != null) {
-				if (archiveEntry.getName().startsWith("apidocs/") && !archiveEntry.getName().equals("apidocs/")) {
+				if (archiveEntry.getName().startsWith("apidocs/") && !archiveEntry.getName().equals("apidocs/"))
+				{
 					getLog().debug("javadoc : " + archiveEntry.getName());
 
 					ZipEntry newEntry = new ZipEntry(StringUtils.substringAfter(archiveEntry.getName(), "apidocs/"));
 					copyEntry(jarInputStream, javadocOutputStream, archiveEntry, newEntry);
-				} else if (archiveEntry.getName().endsWith(".java")) {
+				} else if (archiveEntry.getName().endsWith(".java"))
+				{
 					getLog().debug("source : " + archiveEntry.getName());
 
 					ZipEntry newEntry = new ZipEntry(archiveEntry.getName());
 					copyEntry(jarInputStream, sourceOutputStream, archiveEntry, newEntry);
-				} else {
+				} else
+				{
 					getLog().debug("class : " + archiveEntry.getName());
 					if (archiveEntry.getSize() > 0) {
 						jarInputStream.skip(archiveEntry.getSize());
@@ -278,95 +321,134 @@ public class DeployVDocMojo extends AbstractMojo {
 				}
 			}
 
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
 
-		if (javadoc.exists()) {
+		if (javadoc.exists() )
+		{
 			deployFileConfiguration.setJavadoc(javadoc);
 		}
-		if (source.exists()) {
+		if (source.exists() )
+		{
 			deployFileConfiguration.setSources(source);
 		}
 	}
 
-	public MavenProject getProject() {
+	public MavenProject getProject()
+	{
 		return project;
 	}
 
-	public void setProject(MavenProject project) {
+	public void setProject(MavenProject project)
+	{
 		this.project = project;
 	}
 
-	public MavenSession getSession() {
+	public MavenSession getSession()
+	{
 		return session;
 	}
 
-	public void setSession(MavenSession session) {
+	public void setSession(MavenSession session)
+	{
 		this.session = session;
 	}
 
-	public File getEarFolder() {
+	public File getEarFolder()
+	{
 		return earFolder;
 	}
 
-	public void setEarFolder(File earFolder) {
+	public void setEarFolder(File earFolder)
+	{
 		this.earFolder = earFolder;
 	}
 
-	public String getTargetVersion() {
+	public String getTargetVersion()
+	{
 		return targetVersion;
 	}
 
-	public void setTargetVersion(String targetVersion) {
+	public void setTargetVersion(String targetVersion)
+	{
 		this.targetVersion = targetVersion;
 	}
 
-	public String getTargetGroupId() {
+	public String getTargetGroupId()
+	{
 		return targetGroupId;
 	}
 
-	public void setTargetGroupId(String targetGroupId) {
+	public void setTargetGroupId(String targetGroupId)
+	{
 		this.targetGroupId = targetGroupId;
 	}
 
-	public String getRepositoryId() {
+	public String getRepositoryId()
+	{
 		return repositoryId;
 	}
 
-	public void setRepositoryId(String repositoryId) {
+	public void setRepositoryId(String repositoryId)
+	{
 		this.repositoryId = repositoryId;
 	}
 
-	public boolean isUniqueVersion() {
+	public boolean isUniqueVersion()
+	{
 		return uniqueVersion;
 	}
 
-	public void setUniqueVersion(boolean uniqueVersion) {
+	public void setUniqueVersion(boolean uniqueVersion)
+	{
 		this.uniqueVersion = uniqueVersion;
 	}
 
-	public String getRepositoryUrl() {
+	public String getRepositoryUrl()
+	{
 		return repositoryUrl;
 	}
 
-	public void setRepositoryUrl(String repositoryUrl) {
+	public void setRepositoryUrl(String repositoryUrl)
+	{
 		this.repositoryUrl = repositoryUrl;
 	}
 
-	public File getMavenHome() {
+	public File getMavenHome()
+	{
 		return mavenHome;
 	}
 
-	public void setMavenHome(File mavenHome) {
+	public void setMavenHome(File mavenHome)
+	{
 		this.mavenHome = mavenHome;
 	}
 
-	public List<DeployFileConfiguration> getDependencies() {
+	public List<DeployFileConfiguration> getDependencies()
+	{
 		return dependencies;
 	}
 
-	public void setDependencies(List<DeployFileConfiguration> dependencies) {
+	public void setDependencies(List<DeployFileConfiguration> dependencies)
+	{
 		this.dependencies = dependencies;
+	}
+
+	public PluginDescriptor getPluginDescriptor() {
+		return pluginDescriptor;
+	}
+
+	public void setPluginDescriptor(PluginDescriptor pluginDescriptor) {
+		this.pluginDescriptor = pluginDescriptor;
+	}
+
+	public boolean isOnlyParentPom() {
+		return onlyParentPom;
+	}
+
+	public void setOnlyParentPom(boolean onlyParentPom) {
+		this.onlyParentPom = onlyParentPom;
 	}
 }
