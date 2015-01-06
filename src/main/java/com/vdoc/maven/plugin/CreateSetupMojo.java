@@ -1,8 +1,8 @@
 package com.vdoc.maven.plugin;
 
+import com.vdoc.maven.plugin.beans.CompletedModule;
 import com.vdoc.maven.plugin.enums.PackagingType;
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.*;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -14,19 +14,22 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * this task is used to create a project setup.
  * Created by famaridon on 19/05/2014.
  */
-@Mojo(name = "create-setup", threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
+@Mojo(name = "create-setup", threadSafe = false, defaultPhase = LifecyclePhase.PACKAGE)
 public class CreateSetupMojo extends AbstractVDocMojo {
 
 	public static final String BASE_ZIP_FOLDER = "";
+
+	private static BlockingQueue<CompletedModule> completedModules = new LinkedBlockingQueue<>();
+	private static Boolean completedModulesLock = Boolean.FALSE;
+
 	/**
 	 * Name of the generated JAR.
 	 */
@@ -43,31 +46,37 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 	private boolean includeJavadoc;
 	@Parameter(defaultValue = "false")
 	private boolean includeSource;
+	@Parameter(defaultValue = "false")
+	private boolean includeOtherModules;
 
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		if ("pom".equalsIgnoreCase(this.project.getPackaging())) {
+			getLog().warn("This mojo can't work for pom packaging project!");
+			return;
+		}
 		try {
+			File createdSetup;
 			switch (this.packagingType) {
 				case APPS:
-					this.createAppsSetup();
+					createdSetup = this.createAppsSetup();
 					break;
 				case CUSTOM:
-					this.createCustomSetup();
+					createdSetup = this.createCustomSetup();
 					break;
 				default:
 					throw new IllegalArgumentException("Unsupported packaging type !");
 			}
-
+			this.complete(createdSetup);
 		} catch (IOException e) {
 			throw new MojoFailureException("Zip File can't be build", e);
 		}
-
 	}
 
-	public File createAppsSetup() throws IOException {
+	public File createAppsSetup() throws IOException, MojoExecutionException {
 
-		getLog().info("create the VDoc apps packaging Zip.");
+		getLog().info("Create the VDoc apps packaging Zip.");
 		File vdocAppOutput = new File(buildDirectory, setupName + ".zip");
 		try (ZipArchiveOutputStream output = new ZipArchiveOutputStream(vdocAppOutput);) {
 			for (Resource r : this.project.getResources()) {
@@ -97,6 +106,7 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 			}
 		}
 
+
 		getLog().info("create the meta setup zip with apps, documentation, fix, ...");
 		File metaAppOutput = new File(buildDirectory, setupName + "-" + this.packagingType.toString().toLowerCase() + ".zip");
 		try (ZipArchiveOutputStream output = new ZipArchiveOutputStream(metaAppOutput);) {
@@ -109,18 +119,61 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 					}
 				}
 			}
+
+			// include linked apps
+			// TODO : get apps from ftp
 			this.compressDirectory(output, vdocAppOutput, "apps/");
 
+			// include vdoc fix
 			File fix = new File(this.project.getBasedir(), "fix");
 			if (fix.exists()) {
 				getLog().debug("add fix folder");
 				this.compressDirectory(output, fix, "fix/");
 			}
 
+			// include documentation
 			File documentation = new File(this.project.getBasedir(), "documentation");
 			if (documentation.exists()) {
 				getLog().debug("add documentation folder");
 				this.compressDirectory(output, documentation, "documentation/");
+			}
+
+			// include other modules
+			if (this.includeOtherModules) {
+
+				getLog().info("Join for other modules");
+				// only 1 module can join others tack lock
+				synchronized (completedModulesLock) {
+					if (completedModulesLock == Boolean.TRUE) {
+						throw new MojoExecutionException("Too many project use includeOtherModules = true");
+					}
+					completedModulesLock = Boolean.TRUE;
+				}
+
+				// join other modules if multi-thread else it should be the last compiled module.
+				int modulesCount = this.getProject().getParent().getModules().size() - 1;
+				do {
+					try {
+						CompletedModule completedModule = completedModules.take();
+						getLog().info("Join module " + completedModule.getArtifactId() + " merge setup file " + completedModule.getSetup().getName());
+
+						try (FileInputStream fileInputStream = new FileInputStream(completedModule.getSetup());
+							 BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+							 ArchiveInputStream input = new ArchiveStreamFactory().createArchiveInputStream(bufferedInputStream);) {
+
+							this.mergeSetup(output, input);
+
+						} catch (ArchiveException e) {
+							throw new MojoExecutionException("Can't read module '" + completedModule.getArtifactId() + "' setup file '" + completedModule.getArtifactId() + "'!", e);
+						}
+
+					} catch (InterruptedException e) {
+						throw new MojoExecutionException("Waiting for other module fail!", e);
+					}
+
+
+					modulesCount--;
+				} while (modulesCount > 0);
 			}
 		}
 
@@ -129,6 +182,23 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 
 	public File createCustomSetup() {
 		throw new NotImplementedException("Currently not implemented!");
+	}
+
+	private void mergeSetup(ArchiveOutputStream to, ArchiveInputStream from) throws IOException, MojoExecutionException {
+
+		long offset = 0l;
+		ArchiveEntry entry;
+		while ((entry = from.getNextEntry()) != null) {
+			if (!to.canWriteEntryData(entry)) {
+				throw new MojoExecutionException("Can't merge setup files!");
+			}
+			to.putArchiveEntry(entry);
+			IOUtils.copyLarge(from, to, offset, entry.getSize());
+			to.closeArchiveEntry();
+			offset += entry.getSize();
+		}
+
+
 	}
 
 	private void compressDirectory(ArchiveOutputStream outputStream, File directory, String base) throws IOException {
@@ -157,5 +227,14 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 		}
 	}
 
+	private void complete(File setup) throws MojoExecutionException {
+		synchronized (completedModules) {
+			try {
+				completedModules.put(new CompletedModule(this.getProject().getArtifactId(), setup));
+			} catch (InterruptedException e) {
+				throw new MojoExecutionException("Can't complete this module!", e);
+			}
+		}
+	}
 
 }

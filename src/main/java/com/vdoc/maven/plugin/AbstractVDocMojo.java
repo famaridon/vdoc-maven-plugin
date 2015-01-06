@@ -74,4 +74,23 @@ public abstract class AbstractVDocMojo extends AbstractMojo {
 		return new File(basedir, finalName + classifier + ".jar");
 	}
 
+	public MavenProject getProject() {
+		return project;
+	}
+
+	public MavenSession getSession() {
+		return session;
+	}
+
+	public File getBuildDirectory() {
+		return buildDirectory;
+	}
+
+	public String getJarName() {
+		return jarName;
+	}
+
+	public XmlPlexusConfiguration getConfiguration() {
+		return configuration;
+	}
 }
