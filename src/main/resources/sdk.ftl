@@ -25,7 +25,7 @@
         <vdoc.version>${targetVersion}</vdoc.version>
         <project.build.sourceEncoding>cp1252</project.build.sourceEncoding>
         <skipTests>true</skipTests>
-        <vdoc-maven-plugin.version>14.1.0-SNAPSHOT</vdoc-maven-plugin.version>
+        <vdoc-maven-plugin.version>${pluginDescriptor.version}</vdoc-maven-plugin.version>
     </properties>
 
     <dependencies>
