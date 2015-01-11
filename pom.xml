@@ -52,6 +52,11 @@
             <version>[1.8,)</version>
         </dependency>
         <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>[3.3,)</version>
+        </dependency>
+        <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <version>[2.3.20,)</version>
@@ -114,24 +119,5 @@
         </plugins>
 
     </build>
-
-    <profiles>
-        <profile>
-            <id>vdoc</id>
-            <distributionManagement>
-                <repository>
-                    <id>vdoc</id>
-                    <name>VDoc Internal Repository</name>
-                    <url>${vdoc.deploy.server}/nexus/content/repositories/vdoc.plugins/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>vdoc.snapshot</id>
-                    <name>VDoc Internal snapshot Repository</name>
-                    <url>${vdoc.deploy.server}/nexus/content/repositories/snapshots/</url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
-    </profiles>
-
 
 </project>

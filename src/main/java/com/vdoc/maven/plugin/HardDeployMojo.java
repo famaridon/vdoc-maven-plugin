@@ -24,7 +24,6 @@ public class HardDeployMojo extends AbstractVDocMojo {
      */
     @Parameter(required = true)
     protected File vdocHome;
-
     /**
      * custom folder must be updated
      */
@@ -45,7 +44,9 @@ public class HardDeployMojo extends AbstractVDocMojo {
      */
     @Parameter(required = false, defaultValue = "false")
     protected boolean includeSource;
-
+    /**
+     * where dependencies jar can't be found
+     */
     @Parameter(required = true, defaultValue = "${project.build.directory}/lib")
     private File dependenciesFolder;
 

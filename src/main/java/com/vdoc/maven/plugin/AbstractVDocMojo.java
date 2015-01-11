@@ -6,7 +6,6 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -17,6 +16,10 @@ import java.io.FileFilter;
 public abstract class AbstractVDocMojo extends AbstractMojo {
 
 	private static final String WILDCARD_WEB_APP = FilenameUtils.separatorsToSystem("*custom/webapp*");
+
+	/**
+	 * a {@Link FileFilter} to select all file in custom directory but not webapp sub folder
+	 */
 	public final FileFilter notWebAppFolderFileFilter;
 
 	/**
@@ -24,12 +27,11 @@ public abstract class AbstractVDocMojo extends AbstractMojo {
 	 */
 	@Parameter(defaultValue = "${project}", required = true, readonly = true)
 	protected MavenProject project;
-
+	/**
+	 * The Maven session.
+	 */
 	@Parameter(defaultValue = "${session}", required = true, readonly = true)
 	protected MavenSession session;
-
-//	@Component
-//	protected BuildPluginManager pluginManager;
 
 	/**
 	 * Name of the generated JAR.
@@ -41,9 +43,6 @@ public abstract class AbstractVDocMojo extends AbstractMojo {
 	 */
 	@Parameter(defaultValue = "${project.build.directory}", required = true)
 	protected File buildDirectory;
-
-	@Parameter
-	private XmlPlexusConfiguration configuration;
 
 	protected AbstractVDocMojo() {
 		notWebAppFolderFileFilter = new FileFilter() {
@@ -90,7 +89,4 @@ public abstract class AbstractVDocMojo extends AbstractMojo {
 		return jarName;
 	}
 
-	public XmlPlexusConfiguration getConfiguration() {
-		return configuration;
-	}
 }

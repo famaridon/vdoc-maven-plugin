@@ -15,7 +15,6 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -31,40 +30,57 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
 /**
+ * this task can deploy all VDoc jars into a repository
  * Created by famaridon on 19/05/2014.
  */
 @Mojo(name = "deploy-vdoc", threadSafe = false, requiresProject = false, requiresDirectInvocation = true)
-public class DeployVDocMojo extends AbstractMojo {
+public class DeployVDocMojo extends AbstractVDocMojo {
 
 	/**
-	 * The Maven project.
+	 * the current running plugin description
 	 */
-	@Parameter(defaultValue = "${project}", required = true)
-	protected MavenProject project;
-
-	@Parameter(defaultValue = "${session}", required = true)
-	protected MavenSession session;
-
 	protected PluginDescriptor pluginDescriptor;
 
+	/**
+	 * the VDoc ear folder (prefer the configurator's ear to avoid upload not needed jar)
+	 */
 	@Parameter(property = "earFolder", required = true)
 	protected File earFolder;
 
+	/**
+	 * the VDoc upload version
+	 */
 	@Parameter(property = "targetVersion", required = true)
 	protected String targetVersion;
 
-	@Parameter(property = "targetGroupId", required = true)
+	/**
+	 * the VDoc group id
+	 */
+	@Parameter(property = "targetGroupId", required = true, defaultValue = "com.vdoc.engineering")
 	protected String targetGroupId;
 
+	/**
+	 * the repository id used if password is needed for upload
+	 */
 	@Parameter(property = "repositoryId", required = true)
 	protected String repositoryId;
+
+	/**
+	 * the repository url
+	 */
 	@Parameter(property = "repositoryUrl", required = true)
 	protected String repositoryUrl;
 
-	@Parameter(property = "uniqueVersion", defaultValue = "true", required = true)
+	/**
+	 * snapshot must used unique version
+	 */
+	@Parameter(property = "uniqueVersion", required = false, defaultValue = "true")
 	protected boolean uniqueVersion;
 
-	@Parameter(property = "mavenHome", required = false)
+	/**
+	 * the maven home folder
+	 */
+	@Parameter(property = "mavenHome", required = false, defaultValue = "${env.M2_HOME}")
 	protected File mavenHome;
 
 	/**
@@ -111,6 +127,11 @@ public class DeployVDocMojo extends AbstractMojo {
 
 	}
 
+	/**
+	 * used to build a parent pom from ftl file
+	 * @param artifactId
+	 * @throws MojoExecutionException
+	 */
 	protected void buildParentPom(String artifactId) throws MojoExecutionException {
 		getLog().info("Create the " + artifactId + " pom file");
 		try
@@ -282,6 +303,12 @@ public class DeployVDocMojo extends AbstractMojo {
 		return next > buffer ? buffer : next;
 	}
 
+	/**
+	 * split jar into source and javadoc jar
+	 * @param deployFileConfiguration
+	 * @param jar
+	 * @throws MojoExecutionException
+	 */
 	protected void splitJar(DeployFileConfiguration deployFileConfiguration, File jar) throws MojoExecutionException
 	{
 		File javadoc = new File(jar.getParentFile(), FilenameUtils.getBaseName(jar.getName()) + "-javadoc.jar");

@@ -13,6 +13,10 @@
     <artifactId>sdk.advanced</artifactId>
     <packaging>pom</packaging>
 
+    <properties>
+        <include.other.modules>false</include.other.modules>
+    </properties>
+
     <dependencies>
 	<#list dependencies as dependency >
         <dependency>
@@ -65,6 +69,7 @@
                                 <configuration>
                                     <setupName>${r"${project.artifactId}-${project.version} for VDoc${vdoc.version}"}</setupName>
                                     <packagingType>APPS</packagingType>
+                                    <includeOtherModules>${r"${include.other.modules}"}</includeOtherModules>
                                 </configuration>
                             </execution>
                         </executions>

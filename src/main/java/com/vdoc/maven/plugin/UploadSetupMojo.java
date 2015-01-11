@@ -117,20 +117,4 @@ public class UploadSetupMojo extends AbstractVDocMojo {
 	public void setStoreUrlport(int storeUrlport) {
 		this.storeUrlport = storeUrlport;
 	}
-
-	public String getVdocVersion() {
-		return vdocVersion;
-	}
-
-	public void setVdocVersion(String vdocVersion) {
-		this.vdocVersion = vdocVersion;
-	}
-
-	public String getSetupName() {
-		return setupName;
-	}
-
-	public void setSetupName(String setupName) {
-		this.setupName = setupName;
-	}
 }

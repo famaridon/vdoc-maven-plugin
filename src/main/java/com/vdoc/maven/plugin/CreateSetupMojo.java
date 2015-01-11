@@ -7,6 +7,8 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -26,38 +28,66 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class CreateSetupMojo extends AbstractVDocMojo {
 
 	public static final String BASE_ZIP_FOLDER = "";
+	public static final String SETUP_SUFFIX = "setup";
 
+	/**
+	 * this is used to synchronize multiple modules build on multiple thread
+	 */
 	private static BlockingQueue<CompletedModule> completedModules = new LinkedBlockingQueue<>();
+	/**
+	 * this lock is used to avoid multiple includeOtherModules use.
+	 */
 	private static Boolean completedModulesLock = Boolean.FALSE;
 
 	/**
-	 * Name of the generated JAR.
+	 * the project packaging type actually <b>APPS</b> is the only supported value.
 	 */
 	@Parameter(defaultValue = "APPS")
 	private PackagingType packagingType;
-
+	/**
+	 * the apps file name without extension. The setup is suffixed with <b>-{@value #SETUP_SUFFIX}</b>.
+	 */
 	@Parameter(required = true)
 	private String setupName;
+
+	/**
+	 * where found dependency jars
+	 */
 	@Parameter(required = true, defaultValue = "${project.build.directory}/lib")
 	private File libFolder;
-	@Parameter(defaultValue = "false")
+	/**
+	 * if true test jar should be included in setup
+	 */
+	@Parameter(defaultValue = "true")
 	private boolean includeTest;
+	/**
+	 * if true test javadoc should be included in setup
+	 */
 	@Parameter(defaultValue = "false")
 	private boolean includeJavadoc;
+	/**
+	 * if true source jar should be included in setup
+	 */
 	@Parameter(defaultValue = "false")
 	private boolean includeSource;
+	/**
+	 * other modules should be merged into this project setup
+	 */
 	@Parameter(defaultValue = "false")
 	private boolean includeOtherModules;
 
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
+
 		if ("pom".equalsIgnoreCase(this.project.getPackaging())) {
 			getLog().warn("This mojo can't work for pom packaging project!");
 			return;
 		}
+
+		File createdSetup;
 		try {
-			File createdSetup;
+
 			switch (this.packagingType) {
 				case APPS:
 					createdSetup = this.createAppsSetup();
@@ -68,10 +98,11 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 				default:
 					throw new IllegalArgumentException("Unsupported packaging type !");
 			}
-			this.complete(createdSetup);
+
 		} catch (IOException e) {
 			throw new MojoFailureException("Zip File can't be build", e);
 		}
+		this.complete(createdSetup);
 	}
 
 	public File createAppsSetup() throws IOException, MojoExecutionException {
@@ -108,7 +139,7 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 
 
 		getLog().info("create the meta setup zip with apps, documentation, fix, ...");
-		File metaAppOutput = new File(buildDirectory, setupName + "-" + this.packagingType.toString().toLowerCase() + ".zip");
+		File metaAppOutput = new File(buildDirectory, setupName + "-" + SETUP_SUFFIX+".zip");
 		try (ZipArchiveOutputStream output = new ZipArchiveOutputStream(metaAppOutput);) {
 			for (Resource r : this.project.getResources()) {
 				File userAppsCustomFolder = new File(r.getDirectory() + "/../user_apps_custom/");
@@ -138,53 +169,73 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 				this.compressDirectory(output, documentation, "documentation/");
 			}
 
-			// include other modules
-			if (this.includeOtherModules) {
+			this.includeOtherModules(output);
 
-				getLog().info("Join for other modules");
-				// only 1 module can join others tack lock
-				synchronized (completedModulesLock) {
-					if (completedModulesLock == Boolean.TRUE) {
-						throw new MojoExecutionException("Too many project use includeOtherModules = true");
-					}
-					completedModulesLock = Boolean.TRUE;
-				}
-
-				// join other modules if multi-thread else it should be the last compiled module.
-				int modulesCount = this.getProject().getParent().getModules().size() - 1;
-				do {
-					try {
-						CompletedModule completedModule = completedModules.take();
-						getLog().info("Join module " + completedModule.getArtifactId() + " merge setup file " + completedModule.getSetup().getName());
-
-						try (FileInputStream fileInputStream = new FileInputStream(completedModule.getSetup());
-							 BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-							 ArchiveInputStream input = new ArchiveStreamFactory().createArchiveInputStream(bufferedInputStream);) {
-
-							this.mergeSetup(output, input);
-
-						} catch (ArchiveException e) {
-							throw new MojoExecutionException("Can't read module '" + completedModule.getArtifactId() + "' setup file '" + completedModule.getArtifactId() + "'!", e);
-						}
-
-					} catch (InterruptedException e) {
-						throw new MojoExecutionException("Waiting for other module fail!", e);
-					}
-
-
-					modulesCount--;
-				} while (modulesCount > 0);
-			}
 		}
 
 		return metaAppOutput;
 	}
 
-	public File createCustomSetup() {
-		throw new NotImplementedException("Currently not implemented!");
+	/**
+	 * wait for others modules and merge it into the current module setup
+	 *
+	 * @param output
+	 * @throws MojoExecutionException
+	 * @throws IOException
+	 */
+	protected void includeOtherModules(ZipArchiveOutputStream output) throws MojoExecutionException, IOException {
+		// include other modules
+		if (this.includeOtherModules) {
+
+			getLog().info("Join for other modules");
+			// only 1 module can join others tack lock
+			synchronized (completedModulesLock) {
+				if (completedModulesLock == Boolean.TRUE) {
+					throw new MojoExecutionException("Too many project use includeOtherModules = true");
+				}
+				completedModulesLock = Boolean.TRUE;
+			}
+
+			// join other modules if multi-thread else it should be the last compiled module.
+			int modulesCount = this.getProject().getParent().getModules().size() - 1;
+			do {
+				try {
+					CompletedModule completedModule = completedModules.take();
+					getLog().info("Join module " + completedModule.getArtifactId() + " merge setup file " + completedModule.getSetup().getName());
+
+					if (completedModule.getSetup() == null) {
+						getLog().warn(completedModule.getArtifactId() + " have fail!");
+						throw new MojoExecutionException(completedModule.getArtifactId() + " have fail!");
+					}
+
+					try (FileInputStream fileInputStream = new FileInputStream(completedModule.getSetup());
+						 BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+						 ArchiveInputStream input = new ArchiveStreamFactory().createArchiveInputStream(bufferedInputStream);) {
+
+						this.mergeArchive(output, input);
+
+					} catch (ArchiveException e) {
+						throw new MojoExecutionException("Can't read module '" + completedModule.getArtifactId() + "' setup file '" + completedModule.getArtifactId() + "'!", e);
+					}
+
+				} catch (InterruptedException e) {
+					throw new MojoExecutionException("Waiting for other module fail!", e);
+				}
+
+				modulesCount--;
+			} while (modulesCount > 0);
+		}
 	}
 
-	private void mergeSetup(ArchiveOutputStream to, ArchiveInputStream from) throws IOException, MojoExecutionException {
+	/**
+	 * copy any entry of the <b>from</b> archive into the <b>to</b>.
+	 *
+	 * @param to   the output archive
+	 * @param from the source archive
+	 * @throws IOException
+	 * @throws MojoExecutionException
+	 */
+	protected void mergeArchive(ArchiveOutputStream to, ArchiveInputStream from) throws IOException, MojoExecutionException {
 
 		long offset = 0l;
 		ArchiveEntry entry;
@@ -192,6 +243,7 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 			if (!to.canWriteEntryData(entry)) {
 				throw new MojoExecutionException("Can't merge setup files!");
 			}
+			getLog().debug("merge entry : " + entry.getName());
 			to.putArchiveEntry(entry);
 			IOUtils.copyLarge(from, to, offset, entry.getSize());
 			to.closeArchiveEntry();
@@ -201,11 +253,29 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 
 	}
 
-	private void compressDirectory(ArchiveOutputStream outputStream, File directory, String base) throws IOException {
+	/**
+	 * compress a directory to an archive
+	 *
+	 * @param outputStream the archive stream
+	 * @param directory    the source directory
+	 * @param base         the zip base directory
+	 * @throws IOException
+	 */
+	protected void compressDirectory(ArchiveOutputStream outputStream, File directory, String base) throws IOException {
+
+		Validate.notNull(outputStream);
+		Validate.notNull(directory);
+		Validate.notNull(base);
 
 		if (!directory.exists()) {
 			throw new IllegalArgumentException("directory '" + directory.getPath() + "' to compress not found!");
 		}
+
+		// we must remove first / for base archive entry else we get a blank directory.
+		if (base.startsWith("/")) {
+			base = StringUtils.substring(base, 1);
+		}
+
 		String entryName = base + directory.getName();
 		getLog().debug("Add Zip entry : " + entryName);
 		ArchiveEntry tarEntry = outputStream.createArchiveEntry(directory, entryName);
@@ -227,6 +297,17 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 		}
 	}
 
+
+	public File createCustomSetup() {
+		throw new NotImplementedException("Currently not implemented!");
+	}
+
+	/**
+	 * flag this module as completed
+	 *
+	 * @param setup
+	 * @throws MojoExecutionException
+	 */
 	private void complete(File setup) throws MojoExecutionException {
 		synchronized (completedModules) {
 			try {
@@ -237,4 +318,59 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 		}
 	}
 
+	public PackagingType getPackagingType() {
+		return packagingType;
+	}
+
+	public void setPackagingType(PackagingType packagingType) {
+		this.packagingType = packagingType;
+	}
+
+	public String getSetupName() {
+		return setupName;
+	}
+
+	public void setSetupName(String setupName) {
+		this.setupName = setupName;
+	}
+
+	public File getLibFolder() {
+		return libFolder;
+	}
+
+	public void setLibFolder(File libFolder) {
+		this.libFolder = libFolder;
+	}
+
+	public boolean isIncludeTest() {
+		return includeTest;
+	}
+
+	public void setIncludeTest(boolean includeTest) {
+		this.includeTest = includeTest;
+	}
+
+	public boolean isIncludeJavadoc() {
+		return includeJavadoc;
+	}
+
+	public void setIncludeJavadoc(boolean includeJavadoc) {
+		this.includeJavadoc = includeJavadoc;
+	}
+
+	public boolean isIncludeSource() {
+		return includeSource;
+	}
+
+	public void setIncludeSource(boolean includeSource) {
+		this.includeSource = includeSource;
+	}
+
+	public boolean isIncludeOtherModules() {
+		return includeOtherModules;
+	}
+
+	public void setIncludeOtherModules(boolean includeOtherModules) {
+		this.includeOtherModules = includeOtherModules;
+	}
 }
