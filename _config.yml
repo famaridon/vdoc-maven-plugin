@@ -7,7 +7,7 @@ baseurl: "/vdoc-maven-plugin" # the subpath of your site, e.g. /blog/
 url: "http://famaridon.github.io" # the base hostname & protocol for your site
 github_username:  famaridon
 github_repo: vdoc-maven-plugin
-vdoc_maven_plugin_version: 1.5_SNAPSHOT
+vdoc_maven_plugin_version: 14.1.0_SNAPSHOT
 vdoc_current_version: 14.1
 
 # Build settings

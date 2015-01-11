@@ -1,0 +1,40 @@
+---
+layout: doc
+title: generate-plugin-doc
+description: |
+ Generate this documentation
+permalink: /generate-plugin-doc/
+category: doc
+weight: 2
+---
+
+<h2>Full name</h2>
+<p>com.vdoc.maven:vdoc-maven-plugin:{{vdoc_maven_plugin_version}}:generate-plugin-doc</p>
+
+<h2>Attributes</h2>
+<ul>
+        <li>Requires a Maven project to be executed.</li>
+
+</ul>
+
+<h3>Parameters</h3>
+<dl class="dl-horizontal parameters">
+        <dt class="">outputDirectory</dt>
+        <dd>
+            <ul>
+                <li><span class="type">java.io.File</span></li>
+                <li><span class="default-value">${project.build.directory}/generated-site/jekyll</span></li>
+            </ul>
+        </dd>
+        <dt class="">tempDirectory</dt>
+        <dd>
+            <ul>
+                <li><span class="type">java.io.File</span></li>
+                <li><span class="default-value">${project.build.directory}/generated-site/temp</span></li>
+            </ul>
+        </dd>
+</dl>
+
+<h2 id="pom-example">Example</h2>
+
+<pre data-src="{{ '/example/generate-plugin-doc/pom.xml' | prepend: site.baseurl }}" d></pre>

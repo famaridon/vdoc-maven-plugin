@@ -11,8 +11,10 @@ layout: default
 <div class="container">
     <div class="raw">
         <div class="col-xs-12 col-md-8 main-content" >{{ content }}</div>
-        <div class="hidden-xs col-md-4 side-menu toc">
+        <div class="hidden-xs col-md-4 side-menu" >
+            <nav class="toc" data-spy="affix" data-offset-top="207" >
 
+            </nav>
         </div>
     </div>
 
@@ -22,7 +24,10 @@ layout: default
     $( document ).ready(function() {
         $('.toc').htoc({
             'selectors': 'h2,h3', //elements to use as headings
-            'container': '.main-content' //element to find all selectors in
+            'container': '.main-content', //element to find all selectors in
+            'tocListTemplate': '<ul class="nav"></ul>'
         });
+        $('body').scrollspy({ target: '.toc',offset:207 })
     });
+
 </script>

@@ -1,10 +1,11 @@
 <project>
     ...
     <repositories>
-    <repository>
-        <id>vdoc-release</id>
-        <name>VDoc release repository</name>
-        <url>http://nexus.myvdoc.net/release/</url>
-    </repository>
+        <repository>
+            <id>vdoc-release</id>
+            <name>VDoc release repository</name>
+            <url>http://redmine.myvdoc.net/nexus/</url>
+        </repository>
+    </repositories>
     ...
 </project>

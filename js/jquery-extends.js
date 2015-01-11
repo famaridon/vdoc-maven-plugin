@@ -8,6 +8,7 @@ $.fn.htoc = function (opts) {
     //
     var levels = opts.selectors.toLowerCase().replace('h', '').split(',').sort();
     var levelContainer = [];
+    var itemContainer = [];
 
     var headingsContainer = $(opts.container);
     var headings = $(opts.selectors, headingsContainer);
@@ -21,7 +22,7 @@ $.fn.htoc = function (opts) {
         newLevel = parseInt(heading.tagName.toLowerCase().replace('h', ''));
         if (newLevel > prevLevel) {
             // start sub list
-            levelContainer[newLevel] = opts.addTocList(levelContainer[prevLevel], opts);
+            levelContainer[newLevel] = opts.addTocList(itemContainer[prevLevel], opts);
             prevLevel = newLevel;
         } else if (newLevel < prevLevel) {
             // close sub list
@@ -29,14 +30,14 @@ $.fn.htoc = function (opts) {
         }
         // add toc item to current level
         var anchor;
-        if($(heading).attr('id')){
+        if ($(heading).attr('id')) {
             anchor = $(heading).attr('id');
         } else {
             anchor = opts.anchorName($(heading), index);
             $(heading).attr('id', anchor);
         }
 
-        opts.addTocItem(levelContainer[newLevel], $(heading), anchor);
+        itemContainer[newLevel] = opts.addTocItem(levelContainer[newLevel], $(heading), anchor);
     });
 
     return this;
@@ -56,16 +57,16 @@ $.fn.htoc.defaults = {
     addTocItem: function (container, heading, anchor) {
         var item = $(this.tocItemTemplate);
 
-        var link = $('<a href="#'+heading.attr('id')+'">'+heading.text()+'</a>');
+        var link = $('<a href="#' + heading.attr('id') + '">' + heading.text() + '</a>');
         item.append(link);
         item.addClass(this.tocItemClass(heading));
         $(container).append(item);
         return item;
     },
-    anchorName: function(heading, headingIndex) { //custom function for anchor name
-        return this.prefix+headingIndex;
+    anchorName: function (heading, headingIndex) { //custom function for anchor name
+        return this.prefix + headingIndex;
     },
-    tocItemClass: function(heading) { // custom function for item class
+    tocItemClass: function (heading) { // custom function for item class
         return 'htoc-item';
     }
 };

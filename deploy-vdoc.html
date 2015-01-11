@@ -1,0 +1,109 @@
+---
+layout: doc
+title: deploy-vdoc
+description: |
+ this task can deploy all VDoc jars into a repository
+permalink: /deploy-vdoc/
+category: doc
+weight: 2
+---
+
+<h2>Full name</h2>
+<p>com.vdoc.maven:vdoc-maven-plugin:{{vdoc_maven_plugin_version}}:deploy-vdoc</p>
+
+<h2>Attributes</h2>
+<ul>
+
+</ul>
+
+<h3>Parameters</h3>
+<dl class="dl-horizontal parameters">
+        <dt class="required">buildDirectory</dt>
+        <dd>Directory containing the generated JAR.
+            <ul>
+                <li><span class="type">java.io.File</span></li>
+                <li><span class="default-value">${project.build.directory}</span></li>
+            </ul>
+        </dd>
+        <dt class="required">earFolder</dt>
+        <dd>the VDoc ear folder (prefer the configurator's ear to avoid upload not needed jar)
+            <ul>
+                <li><span class="type">java.io.File</span></li>
+                
+            </ul>
+        </dd>
+        <dt class="">jarName</dt>
+        <dd>Name of the generated JAR.
+            <ul>
+                <li><span class="type">java.lang.String</span></li>
+                <li><span class="default-value">${project.build.finalName}</span></li>
+            </ul>
+        </dd>
+        <dt class="">mavenHome</dt>
+        <dd>the maven home folder
+            <ul>
+                <li><span class="type">java.io.File</span></li>
+                <li><span class="default-value">${env.M2_HOME}</span></li>
+            </ul>
+        </dd>
+        <dt class="">onlyParentPom</dt>
+        <dd>set to true for only deploy parents pom
+            <ul>
+                <li><span class="type">boolean</span></li>
+                <li><span class="default-value">false</span></li>
+            </ul>
+        </dd>
+        <dt class="required">project</dt>
+        <dd>The Maven project.
+            <ul>
+                <li><span class="type">org.apache.maven.project.MavenProject</span></li>
+                <li><span class="default-value">${project}</span></li>
+            </ul>
+        </dd>
+        <dt class="required">repositoryId</dt>
+        <dd>the repository id used if password is needed for upload
+            <ul>
+                <li><span class="type">java.lang.String</span></li>
+                
+            </ul>
+        </dd>
+        <dt class="required">repositoryUrl</dt>
+        <dd>the repository url
+            <ul>
+                <li><span class="type">java.lang.String</span></li>
+                
+            </ul>
+        </dd>
+        <dt class="required">session</dt>
+        <dd>The Maven session.
+            <ul>
+                <li><span class="type">org.apache.maven.execution.MavenSession</span></li>
+                <li><span class="default-value">${session}</span></li>
+            </ul>
+        </dd>
+        <dt class="required">targetGroupId</dt>
+        <dd>the VDoc group id
+            <ul>
+                <li><span class="type">java.lang.String</span></li>
+                <li><span class="default-value">com.vdoc.engineering</span></li>
+            </ul>
+        </dd>
+        <dt class="required">targetVersion</dt>
+        <dd>the VDoc upload version
+            <ul>
+                <li><span class="type">java.lang.String</span></li>
+                
+            </ul>
+        </dd>
+        <dt class="">uniqueVersion</dt>
+        <dd>snapshot must used unique version
+            <ul>
+                <li><span class="type">boolean</span></li>
+                <li><span class="default-value">true</span></li>
+            </ul>
+        </dd>
+</dl>
+
+<h2 id="pom-example">Example</h2>
+
+<pre data-src="{{ '/example/deploy-vdoc/pom.xml' | prepend: site.baseurl }}" d></pre>

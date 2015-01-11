@@ -4,7 +4,12 @@
 ---
 
 /* As hex codes */
-
+$fixed-header-size : 50px;
+$gray-darker:            lighten(#000, 13.5%); // #222
+$gray-dark:              lighten(#000, 20%);   // #333
+$gray:                   lighten(#000, 33.5%); // #555
+$gray-light:             lighten(#000, 46.7%); // #777
+$gray-lighter:           lighten(#000, 93.5%) ; // #eee
 
 $color-primary-0: #3366FF;	/* Main Primary color */
 $color-primary-1: #85A3FE;
@@ -41,6 +46,10 @@ $color-ternary-4: #FF7A00;
 h1{
   color: $color-ternary-0;
 }
+h1,h2,h3,h4,h5{
+  padding-top: $fixed-header-size+10;
+  margin-top: -($fixed-header-size+10);
+}
 
 .container, .container-fluid{
   &.container-inverse{
@@ -69,3 +78,48 @@ h1{
   }
 }
 
+.parameters{
+  &>dt{
+    color: $color-ternary-3;
+    text-align: right;
+    padding-top: 1px;
+  }
+  .type{
+    &:before{
+      content: 'Type : ';
+      font-weight: bold;
+    }
+    color: $gray-light;
+  }
+  .default-value{
+    &:before{
+      content: 'Default : ';
+      font-weight: bold;
+    }
+    color: $gray-light;
+  }
+}
+
+.toc{
+  .active>a{
+    border-left: 2px;
+    border-left-style: solid;
+    border-left-color: $color-primary-0;
+  }
+  ul{
+    list-style: none;
+    ul li a {
+      padding-left: 28px;
+    }
+  }
+  &.affix{
+    top: 65px;
+  }
+}
+
+body {
+  position: relative;
+  &>.container{
+    padding-top: 15px;
+  }
+}

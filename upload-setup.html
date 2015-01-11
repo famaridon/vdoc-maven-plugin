@@ -1,15 +1,15 @@
 ---
 layout: doc
-title: generate-classes
+title: upload-setup
 description: |
- Generate VDoc classes
-permalink: /generate-classes/
+ Upload this setup into a store
+permalink: /upload-setup/
 category: doc
 weight: 2
 ---
 
 <h2>Full name</h2>
-<p>com.vdoc.maven:vdoc-maven-plugin:{{vdoc_maven_plugin_version}}:generate-classes</p>
+<p>com.vdoc.maven:vdoc-maven-plugin:{{vdoc_maven_plugin_version}}:upload-setup</p>
 
 <h2>Attributes</h2>
 <ul>
@@ -20,13 +20,6 @@ weight: 2
 
 <h3>Parameters</h3>
 <dl class="dl-horizontal parameters">
-        <dt class="">baseClasses</dt>
-        <dd>
-            <ul>
-                <li><span class="type">boolean</span></li>
-                <li><span class="default-value">true</span></li>
-            </ul>
-        </dd>
         <dt class="required">buildDirectory</dt>
         <dd>Directory containing the generated JAR.
             <ul>
@@ -34,32 +27,11 @@ weight: 2
                 <li><span class="default-value">${project.build.directory}</span></li>
             </ul>
         </dd>
-        <dt class="">customClasses</dt>
-        <dd>
-            <ul>
-                <li><span class="type">boolean</span></li>
-                <li><span class="default-value">true</span></li>
-            </ul>
-        </dd>
         <dt class="">jarName</dt>
         <dd>Name of the generated JAR.
             <ul>
                 <li><span class="type">java.lang.String</span></li>
                 <li><span class="default-value">${project.build.finalName}</span></li>
-            </ul>
-        </dd>
-        <dt class="required">login</dt>
-        <dd>
-            <ul>
-                <li><span class="type">java.lang.String</span></li>
-                
-            </ul>
-        </dd>
-        <dt class="">outputDirectory</dt>
-        <dd>
-            <ul>
-                <li><span class="type">java.io.File</span></li>
-                <li><span class="default-value">${project.build.sourceDirectory}</span></li>
             </ul>
         </dd>
         <dt class="required">password</dt>
@@ -83,7 +55,35 @@ weight: 2
                 <li><span class="default-value">${session}</span></li>
             </ul>
         </dd>
-        <dt class="required">vdocURL</dt>
+        <dt class="required">setupName</dt>
+        <dd>
+            <ul>
+                <li><span class="type">java.lang.String</span></li>
+                
+            </ul>
+        </dd>
+        <dt class="required">storeUrlHost</dt>
+        <dd>
+            <ul>
+                <li><span class="type">java.lang.String</span></li>
+                
+            </ul>
+        </dd>
+        <dt class="required">storeUrlport</dt>
+        <dd>
+            <ul>
+                <li><span class="type">int</span></li>
+                
+            </ul>
+        </dd>
+        <dt class="required">username</dt>
+        <dd>
+            <ul>
+                <li><span class="type">java.lang.String</span></li>
+                
+            </ul>
+        </dd>
+        <dt class="required">vdocVersion</dt>
         <dd>
             <ul>
                 <li><span class="type">java.lang.String</span></li>
@@ -94,4 +94,4 @@ weight: 2
 
 <h2 id="pom-example">Example</h2>
 
-<pre data-src="{{ '/example/generate-classes/pom.xml' | prepend: site.baseurl }}" d></pre>
+<pre data-src="{{ '/example/upload-setup/pom.xml' | prepend: site.baseurl }}" d></pre>

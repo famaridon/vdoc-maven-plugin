@@ -2,46 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>com.vdoc.engineering</groupId>
-        <artifactId>sdk.advanced</artifactId>
-        <version>14-SNAPSHOT</version>
-    </parent>
-
-    <artifactId>sdk.commons</artifactId>
-    <version>1.11-SNAPSHOT</version>
-    <packaging>jar</packaging>
-
-    <properties>
-        <vdoc.version>14.0.4</vdoc.version>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-            <version>2.3.9</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jasypt</groupId>
-            <artifactId>jasypt</artifactId>
-            <version>1.9.2</version>
-            <scope>compile</scope>
-        </dependency>
-
-    </dependencies>
-
+...
     <build>
         <plugins>
             <plugin>
@@ -68,7 +29,7 @@
                             <goal>hard-deploy</goal>
                         </goals>
                         <configuration>
-                            <includeTest>false</includeTest>
+                            <includeTest>true</includeTest>
                             <vdocHome>D:\Install\VDoc14.0</vdocHome>
                         </configuration>
                     </execution>
@@ -76,6 +37,5 @@
             </plugin>
         </plugins>
     </build>
-
-
+...
 </project>

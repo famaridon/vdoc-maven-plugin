@@ -1,7 +1,8 @@
 ---
 layout: doc
-title: Hard deploy
-description: this goal is used to deploy a project into the targeted VDoc install.
+title: hard-deploy
+description: |
+ this task is used to deploy a project to the target VDoc install.
 permalink: /hard-deploy/
 category: doc
 weight: 2
@@ -12,39 +13,85 @@ weight: 2
 
 <h2>Attributes</h2>
 <ul>
-    <li>Requires a Maven project to be executed.</li>
-    <li>Requires dependency resolution of artifacts in scope: runtime.</li>
-    <li>The goal is thread-safe and supports parallel builds.</li>
-    <li>Binds by default to the lifecycle phase: package.</li>
+        <li>Requires a Maven project to be executed.</li>
+        <li>The goal is thread-safe and supports parallel builds.</li>
+
 </ul>
 
-<h3>Required Parameters</h3>
-<dl class="dl-horizontal">
-    <dt>vdoc.home</dt>
-    <dd><span class="type">File</span> the target VDoc instance home.</dd>
+<h3>Parameters</h3>
+<dl class="dl-horizontal parameters">
+        <dt class="required">buildDirectory</dt>
+        <dd>Directory containing the generated JAR.
+            <ul>
+                <li><span class="type">java.io.File</span></li>
+                <li><span class="default-value">${project.build.directory}</span></li>
+            </ul>
+        </dd>
+        <dt class="required">dependenciesFolder</dt>
+        <dd>where dependencies jar can't be found
+            <ul>
+                <li><span class="type">java.io.File</span></li>
+                <li><span class="default-value">${project.build.directory}/lib</span></li>
+            </ul>
+        </dd>
+        <dt class="required">deployDependencies</dt>
+        <dd>custom folder must be updated
+            <ul>
+                <li><span class="type">boolean</span></li>
+                <li><span class="default-value">true</span></li>
+            </ul>
+        </dd>
+        <dt class="">includeSource</dt>
+        <dd>source jar must be deployed
+            <ul>
+                <li><span class="type">boolean</span></li>
+                <li><span class="default-value">false</span></li>
+            </ul>
+        </dd>
+        <dt class="">includeTest</dt>
+        <dd>test jar must be deployed
+            <ul>
+                <li><span class="type">boolean</span></li>
+                <li><span class="default-value">true</span></li>
+            </ul>
+        </dd>
+        <dt class="">jarName</dt>
+        <dd>Name of the generated JAR.
+            <ul>
+                <li><span class="type">java.lang.String</span></li>
+                <li><span class="default-value">${project.build.finalName}</span></li>
+            </ul>
+        </dd>
+        <dt class="required">project</dt>
+        <dd>The Maven project.
+            <ul>
+                <li><span class="type">org.apache.maven.project.MavenProject</span></li>
+                <li><span class="default-value">${project}</span></li>
+            </ul>
+        </dd>
+        <dt class="required">session</dt>
+        <dd>The Maven session.
+            <ul>
+                <li><span class="type">org.apache.maven.execution.MavenSession</span></li>
+                <li><span class="default-value">${session}</span></li>
+            </ul>
+        </dd>
+        <dt class="required">vdocHome</dt>
+        <dd>the VDoc home folder.
+            <ul>
+                <li><span class="type">java.io.File</span></li>
+                
+            </ul>
+        </dd>
+        <dt class="required">withCustom</dt>
+        <dd>custom folder must be updated
+            <ul>
+                <li><span class="type">boolean</span></li>
+                <li><span class="default-value">true</span></li>
+            </ul>
+        </dd>
 </dl>
 
-<h3>Optional Parameters</h3>
+<h2 id="pom-example">Example</h2>
 
-<dl class="dl-horizontal">
-    <dt>vdoc.home</dt>
-    <dd><span class="type">File</span> the target VDoc instance home.</dd>
-
-    <dt>with.custom</dt>
-    <dd><span class="type">boolean</span> the custom folder must be updated.<span class="default-value">default : true</span></dd>
-
-    <dt>include.test</dt>
-    <dd><span class="type">boolean</span> test jar should be deployed.<span class="default-value">default : true</span></dd>
-
-    <dt>include.source</dt>
-    <dd><span class="type">boolean</span> source jar should be deployed.<span class="default-value">default : false</span></dd>
-
-    <dt>sourceCustom</dt>
-    <dd><span class="type">File</span> Directory containing the generated source JAR.<span class="default-value">default : ${project.build.directory}</span></dd>
-
-    <dt>jarDirectory</dt>
-    <dd><span class="type">File</span> Directory containing the generated JAR.<span class="default-value">default : ${project.build.directory}</span></dd>
-
-    <dt>jarName</dt>
-    <dd><span class="type">File</span> Name of the generated JAR.<span class="default-value">default : ${project.build.finalName}</span></dd>
-</dl>
+<pre data-src="{{ '/example/hard-deploy/pom.xml' | prepend: site.baseurl }}" d></pre>
