@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by famaridon on 19/05/2014.
+ * Upload this setup into a store
  */
 @Mojo(name = "upload-setup", threadSafe = true, defaultPhase = LifecyclePhase.DEPLOY)
 public class UploadSetupMojo extends AbstractVDocMojo {

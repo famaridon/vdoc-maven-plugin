@@ -89,7 +89,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.3</version>
+                <version>3.4</version>
                 <configuration>
                     <!-- see http://jira.codehaus.org/browse/MNG-5346 -->
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
@@ -115,6 +115,11 @@
                 <configuration>
                     <uniqueVersion>true</uniqueVersion>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.vdoc.maven</groupId>
+                <artifactId>vdoc-maven-plugin</artifactId>
+                <version>${project.version}</version>
             </plugin>
         </plugins>
 

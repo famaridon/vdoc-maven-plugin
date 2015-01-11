@@ -25,9 +25,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * Created by famaridon on 19/05/2014.
+ * Generate VDoc classes
  */
-@Mojo(name = "GenerateClass", threadSafe = true)
+@Mojo(name = "generate-classes", threadSafe = true)
 public class GenerateClass extends AbstractVDocMojo {
 
 	@Parameter(alias = "vdoc-url", required = true)

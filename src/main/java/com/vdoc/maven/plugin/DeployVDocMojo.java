@@ -31,7 +31,6 @@ import java.util.zip.ZipEntry;
 
 /**
  * this task can deploy all VDoc jars into a repository
- * Created by famaridon on 19/05/2014.
  */
 @Mojo(name = "deploy-vdoc", threadSafe = false, requiresProject = false, requiresDirectInvocation = true)
 public class DeployVDocMojo extends AbstractVDocMojo {
@@ -164,7 +163,7 @@ public class DeployVDocMojo extends AbstractVDocMojo {
 			getLog().debug("get the sdk template localy.");
 			String ftlName = artifactId + ".ftl";
 			try (
-					InputStream input = getClass().getClassLoader().getResourceAsStream(ftlName);
+					InputStream input = getClass().getClassLoader().getResourceAsStream("pom/" + ftlName);
 					FileOutputStream outputStream = new FileOutputStream(new File(this.mavenHome, ftlName));
 			)
 			{

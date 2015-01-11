@@ -11,8 +11,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * this task is used to deploy a project to the target vdoc install.
- * Created by famaridon on 19/05/2014.
+ * this task is used to deploy a project to the target VDoc install.
  */
 @Mojo(name = "hard-deploy", threadSafe = true, defaultPhase = LifecyclePhase.PACKAGE)
 public class HardDeployMojo extends AbstractVDocMojo {

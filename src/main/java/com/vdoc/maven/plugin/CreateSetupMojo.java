@@ -22,7 +22,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * this task is used to create a project setup.
- * Created by famaridon on 19/05/2014.
  */
 @Mojo(name = "create-setup", threadSafe = false, defaultPhase = LifecyclePhase.PACKAGE)
 public class CreateSetupMojo extends AbstractVDocMojo {
