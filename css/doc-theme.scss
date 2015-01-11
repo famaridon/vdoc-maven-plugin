@@ -83,6 +83,9 @@ h1,h2,h3,h4,h5{
     color: $color-ternary-3;
     text-align: right;
     padding-top: 1px;
+    .required:before{
+      content: '*';
+    }
   }
   .type{
     &:before{
