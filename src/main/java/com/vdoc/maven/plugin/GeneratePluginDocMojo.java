@@ -27,9 +27,16 @@ public class GeneratePluginDocMojo extends AbstractMojo {
      */
     protected PluginDescriptor pluginDescriptor;
 
+
+    /**
+     * the documentation output directory
+     */
     @Parameter(defaultValue = "${project.build.directory}/generated-site/jekyll")
     protected File outputDirectory;
 
+    /**
+     * a temp directory used to extract ftl files.
+     */
     @Parameter(defaultValue = "${project.build.directory}/generated-site/temp")
     protected File tempDirectory;
 
@@ -83,7 +90,7 @@ public class GeneratePluginDocMojo extends AbstractMojo {
             Template temp = cfg.getTemplate(ftlName);
 
             for (MojoDescriptor mojoDescriptor : pluginDescriptor.getMojos()) {
-                getLog().info("Build documentation for " + mojoDescriptor.getGoal() + ".html");
+                getLog().info("Build documentation into " + this.outputDirectory.getAbsolutePath() + "/" + mojoDescriptor.getGoal() + ".html");
                 File pom = new File(this.outputDirectory, mojoDescriptor.getGoal() + ".html");
                 try (Writer out = new FileWriter(pom);) {
                     temp.process(mojoDescriptor, out);

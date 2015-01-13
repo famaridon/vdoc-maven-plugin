@@ -44,7 +44,7 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 	@Parameter(defaultValue = "APPS")
 	private PackagingType packagingType;
 	/**
-	 * the apps file name without extension. The setup is suffixed with <b>-{@value #SETUP_SUFFIX}</b>.
+	 * the apps file name without extension. The setup is suffixed with <b>-setup</b>.
 	 */
 	@Parameter(required = true)
 	private String setupName;

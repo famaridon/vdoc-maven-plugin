@@ -30,22 +30,35 @@ import java.util.zip.ZipInputStream;
 @Mojo(name = "generate-classes", threadSafe = true)
 public class GenerateClass extends AbstractVDocMojo {
 
+	/**
+	 * the VDoc url where found data model
+	 */
 	@Parameter(alias = "vdoc-url", required = true)
 	protected String vdocURL;
-
+	/**
+	 * A VDoc user login
+	 */
 	@Parameter(alias = "login", required = true)
 	protected String login;
-
+	/**
+	 * the user's password
+	 */
 	@Parameter(alias = "password", required = true)
 	protected String password;
-
+	/**
+	 * Base classes must be generated ?
+	 */
 	@Parameter(alias = "base-classes", required = false, defaultValue = "true")
 	protected boolean baseClasses;
-
+	/**
+	 * where classes must be output. You can prefer a specific folder for generated classes but don't forgot to add this folder into compile plugin.
+	 */
 	@Parameter(alias = "output-directory", required = false, defaultValue = "${project.build.sourceDirectory}")
 	protected File outputDirectory;
-
-	@Parameter(alias = "custom-classes", required = false, defaultValue = "true")
+	/**
+	 * custom classes must be generated. (it's recommended to turn it on only first time)
+	 */
+	@Parameter(alias = "custom-classes", required = false, defaultValue = "false")
 	protected boolean customClasses;
 
 

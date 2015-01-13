@@ -20,19 +20,34 @@ import java.io.InputStream;
 public class UploadSetupMojo extends AbstractVDocMojo {
 
 
+	/**
+	 * the user name with upload right
+	 */
 	@Parameter(required = true)
 	private String username;
+	/**
+	 * the user's password
+	 */
 	@Parameter(required = true)
 	private String password;
-
+	/**
+	 * the restFull store url
+	 */
 	@Parameter(required = true)
 	private String storeUrlHost;
-	@Parameter(required = true)
+	/**
+	 * the http port
+	 */
+	@Parameter(required = true, defaultValue = "80")
 	private int storeUrlport;
-
+	/**
+	 * the vdoc version to build correct store path
+	 */
 	@Parameter(required = true)
 	private String vdocVersion;
-
+	/**
+	 * where the setup can be found
+	 */
 	@Parameter(required = true)
 	private String setupName;
 

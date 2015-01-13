@@ -62,13 +62,12 @@
             <version>[2.3.20,)</version>
         </dependency>
 
-        <!-- test -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
+            <groupId>org.tmatesoft.svnkit</groupId>
+            <artifactId>svnkit</artifactId>
+            <version>1.8.7</version>
         </dependency>
+
 
     </dependencies>
 
@@ -120,6 +119,18 @@
                 <groupId>com.vdoc.maven</groupId>
                 <artifactId>vdoc-maven-plugin</artifactId>
                 <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <id>doc</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>generate-plugin-doc</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/../vdoc-maven-plugin-gh-pages/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 

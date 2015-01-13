@@ -2,15 +2,14 @@
 ---
 layout: doc
 title: ${goal}
-description: |
-${description}
+description: ${description}
 permalink: /${goal}/
 category: doc
 weight: 2
 ---
 
 <h2>Full name</h2>
-<p>${pluginDescriptor.groupId}:${pluginDescriptor.artifactId}:{{vdoc_maven_plugin_version}}:${goal}</p>
+<p>${pluginDescriptor.groupId}:${pluginDescriptor.artifactId}:{{site.vdoc_maven_plugin_version}}:${goal}</p>
 
 <h2>Attributes</h2>
 <ul>
@@ -23,8 +22,8 @@ weight: 2
 <#if threadSafe>
     <li>The goal is thread-safe and supports parallel builds.</li>
 </#if>
-<#if executeGoal?? >
-    <li>Binds by default to the lifecycle phase: ${executeGoal}.</li>
+<#if phase?? >
+    <li>Binds by default to the lifecycle phase: ${phase}.</li>
 </#if>
 
 </ul>
