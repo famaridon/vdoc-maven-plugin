@@ -1,0 +1,18 @@
+---
+---
+set earFolder=%VDOC_HOME%\jboss\server\all\deploy\vdoc.ear
+set targetVersion={{ site.vdoc_current_version }}
+set targetGroupId=com.vdoc.sdk
+set repositoryId=vdoc
+set repositoryUrl=http://redmine.myvdoc.net/nexus/content/repositories/releases/
+set mavenHome=D:\apache-maven-3.2.1
+
+
+@echo earFolder : %earFolder%
+@echo targetVersion : %targetVersion%
+@echo targetGroupId : %targetGroupId%
+@echo repositoryId : %repositoryId%
+@echo repositoryUrl : %repositoryUrl%
+@echo mavenHome : %mavenHome%
+
+mvn.bat -X com.vdoc.maven:vdoc-maven-plugin:{{ site.vdoc_maven_plugin_version }}:deploy-vdoc -DearFolder=%earFolder% -DtargetVersion=%targetVersion% -DtargetGroupId=%targetGroupId% -DrepositoryId=%repositoryId% -DrepositoryUrl=%repositoryUrl% -DmavenHome=%mavenHome%

@@ -1,101 +1,101 @@
 ---
 layout: doc
 title: create-setup
-description: |
- this task is used to create a project setup.
+description: this task is used to create a project setup.
 permalink: /create-setup/
 category: doc
 weight: 2
 ---
 
 <h2>Full name</h2>
-<p>com.vdoc.maven:vdoc-maven-plugin:{{vdoc_maven_plugin_version}}:create-setup</p>
+<p>com.vdoc.maven:vdoc-maven-plugin:{{site.vdoc_maven_plugin_version}}:create-setup</p>
 
 <h2>Attributes</h2>
 <ul>
-        <li>Requires a Maven project to be executed.</li>
+    <li>Requires a Maven project to be executed.</li>
+    <li>Binds by default to the lifecycle phase: package.</li>
 
 </ul>
 
 <h3>Parameters</h3>
 <dl class="dl-horizontal parameters">
-        <dt class="required">buildDirectory</dt>
-        <dd>Directory containing the generated JAR.
-            <ul>
-                <li><span class="type">java.io.File</span></li>
+    <dt class="required">buildDirectory</dt>
+    <dd>Directory containing the generated JAR.
+        <ul>
+            <li><span class="type">java.io.File</span></li>
                 <li><span class="default-value">${project.build.directory}</span></li>
-            </ul>
-        </dd>
-        <dt class="">includeJavadoc</dt>
-        <dd>if true test javadoc should be included in setup
-            <ul>
-                <li><span class="type">boolean</span></li>
+        </ul>
+    </dd>
+    <dt class="">includeJavadoc</dt>
+    <dd>if true test javadoc should be included in setup
+        <ul>
+            <li><span class="type">boolean</span></li>
                 <li><span class="default-value">false</span></li>
-            </ul>
-        </dd>
-        <dt class="">includeOtherModules</dt>
-        <dd>other modules should be merged into this project setup
-            <ul>
-                <li><span class="type">boolean</span></li>
+        </ul>
+    </dd>
+    <dt class="">includeOtherModules</dt>
+    <dd>other modules should be merged into this project setup
+        <ul>
+            <li><span class="type">boolean</span></li>
                 <li><span class="default-value">false</span></li>
-            </ul>
-        </dd>
-        <dt class="">includeSource</dt>
-        <dd>if true source jar should be included in setup
-            <ul>
-                <li><span class="type">boolean</span></li>
+        </ul>
+    </dd>
+    <dt class="">includeSource</dt>
+    <dd>if true source jar should be included in setup
+        <ul>
+            <li><span class="type">boolean</span></li>
                 <li><span class="default-value">false</span></li>
-            </ul>
-        </dd>
-        <dt class="">includeTest</dt>
-        <dd>if true test jar should be included in setup
-            <ul>
-                <li><span class="type">boolean</span></li>
+        </ul>
+    </dd>
+    <dt class="">includeTest</dt>
+    <dd>if true test jar should be included in setup
+        <ul>
+            <li><span class="type">boolean</span></li>
                 <li><span class="default-value">true</span></li>
-            </ul>
-        </dd>
-        <dt class="">jarName</dt>
-        <dd>Name of the generated JAR.
-            <ul>
-                <li><span class="type">java.lang.String</span></li>
+        </ul>
+    </dd>
+    <dt class="">jarName</dt>
+    <dd>Name of the generated JAR.
+        <ul>
+            <li><span class="type">java.lang.String</span></li>
                 <li><span class="default-value">${project.build.finalName}</span></li>
-            </ul>
-        </dd>
-        <dt class="required">libFolder</dt>
-        <dd>where found dependency jars
-            <ul>
-                <li><span class="type">java.io.File</span></li>
+        </ul>
+    </dd>
+    <dt class="required">libFolder</dt>
+    <dd>where found dependency jars
+        <ul>
+            <li><span class="type">java.io.File</span></li>
                 <li><span class="default-value">${project.build.directory}/lib</span></li>
-            </ul>
-        </dd>
-        <dt class="">packagingType</dt>
-        <dd>the project packaging type actually <b>APPS</b> is the only supported value.
-            <ul>
-                <li><span class="type">com.vdoc.maven.plugin.enums.PackagingType</span></li>
+        </ul>
+    </dd>
+    <dt class="">packagingType</dt>
+    <dd>the project packaging type actually <b>APPS</b> is the only supported value.
+        <ul>
+            <li><span class="type">com.vdoc.maven.plugin.enums.PackagingType</span></li>
                 <li><span class="default-value">APPS</span></li>
-            </ul>
-        </dd>
-        <dt class="required">project</dt>
-        <dd>The Maven project.
-            <ul>
-                <li><span class="type">org.apache.maven.project.MavenProject</span></li>
+        </ul>
+    </dd>
+    <dt class="required">project</dt>
+    <dd>The Maven project.
+        <ul>
+            <li><span class="type">org.apache.maven.project.MavenProject</span></li>
                 <li><span class="default-value">${project}</span></li>
-            </ul>
-        </dd>
-        <dt class="required">session</dt>
-        <dd>The Maven session.
-            <ul>
-                <li><span class="type">org.apache.maven.execution.MavenSession</span></li>
+        </ul>
+    </dd>
+    <dt class="required">session</dt>
+    <dd>The Maven session.
+        <ul>
+            <li><span class="type">org.apache.maven.execution.MavenSession</span></li>
                 <li><span class="default-value">${session}</span></li>
-            </ul>
-        </dd>
-        <dt class="required">setupName</dt>
-        <dd>the apps file name without extension. The setup is suffixed with <b>-{@value #SETUP_SUFFIX}</b>.
-            <ul>
-                <li><span class="type">java.lang.String</span></li>
-                
-            </ul>
-        </dd>
+        </ul>
+    </dd>
+    <dt class="required">setupName</dt>
+    <dd>the apps file name without extension. The setup is suffixed with <b>-setup</b>.
+        <ul>
+            <li><span class="type">java.lang.String</span></li>
+
+        </ul>
+    </dd>
 </dl>
 
 <h2 id="pom-example">Example</h2>

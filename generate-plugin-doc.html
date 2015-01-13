@@ -1,38 +1,37 @@
 ---
 layout: doc
 title: generate-plugin-doc
-description: |
- Generate this documentation
+description: Generate this documentation
 permalink: /generate-plugin-doc/
 category: doc
 weight: 2
 ---
 
 <h2>Full name</h2>
-<p>com.vdoc.maven:vdoc-maven-plugin:{{vdoc_maven_plugin_version}}:generate-plugin-doc</p>
+<p>com.vdoc.maven:vdoc-maven-plugin:{{site.vdoc_maven_plugin_version}}:generate-plugin-doc</p>
 
 <h2>Attributes</h2>
 <ul>
-        <li>Requires a Maven project to be executed.</li>
+    <li>Requires a Maven project to be executed.</li>
 
 </ul>
 
 <h3>Parameters</h3>
 <dl class="dl-horizontal parameters">
-        <dt class="">outputDirectory</dt>
-        <dd>
-            <ul>
-                <li><span class="type">java.io.File</span></li>
+    <dt class="">outputDirectory</dt>
+    <dd>the documentation output directory
+        <ul>
+            <li><span class="type">java.io.File</span></li>
                 <li><span class="default-value">${project.build.directory}/generated-site/jekyll</span></li>
-            </ul>
-        </dd>
-        <dt class="">tempDirectory</dt>
-        <dd>
-            <ul>
-                <li><span class="type">java.io.File</span></li>
+        </ul>
+    </dd>
+    <dt class="">tempDirectory</dt>
+    <dd>a temp directory used to extract ftl files.
+        <ul>
+            <li><span class="type">java.io.File</span></li>
                 <li><span class="default-value">${project.build.directory}/generated-site/temp</span></li>
-            </ul>
-        </dd>
+        </ul>
+    </dd>
 </dl>
 
 <h2 id="pom-example">Example</h2>

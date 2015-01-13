@@ -1,22 +1,30 @@
 ---
 ---
-<?xml version="1.0" encoding="UTF-8"?>
+
+        <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 ...
+
     <build>
         <plugins>
+            <!-- don't forgot to copy not provided dependencies-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
+                <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>copy-dependencies</id>
                         <phase>prepare-package</phase>
                         <goals>
-                            <goal>test-jar</goal>
+                            <goal>copy-dependencies</goal>
                         </goals>
+                        <configuration>
+                            <excludeScope>provided</excludeScope>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -28,16 +36,18 @@
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <goal>hard-deploy</goal>
+                            <goal>create-setup</goal>
                         </goals>
                         <configuration>
-                            <includeTest>true</includeTest>
-                            <vdocHome>D:\Install\VDoc14.0</vdocHome>
+                            <setupName>${project.artifactId}-${project.version} for VDoc${vdoc.version}"</setupName>
+                            <packagingType>APPS</packagingType>
+                            <includeOtherModules>true</includeOtherModules>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+
 ...
 </project>

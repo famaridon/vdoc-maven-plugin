@@ -1,95 +1,94 @@
 ---
 layout: doc
 title: generate-classes
-description: |
- Generate VDoc classes
+description: Generate VDoc classes
 permalink: /generate-classes/
 category: doc
 weight: 2
 ---
 
 <h2>Full name</h2>
-<p>com.vdoc.maven:vdoc-maven-plugin:{{vdoc_maven_plugin_version}}:generate-classes</p>
+<p>com.vdoc.maven:vdoc-maven-plugin:{{site.vdoc_maven_plugin_version}}:generate-classes</p>
 
 <h2>Attributes</h2>
 <ul>
-        <li>Requires a Maven project to be executed.</li>
-        <li>The goal is thread-safe and supports parallel builds.</li>
+    <li>Requires a Maven project to be executed.</li>
+    <li>The goal is thread-safe and supports parallel builds.</li>
 
 </ul>
 
 <h3>Parameters</h3>
 <dl class="dl-horizontal parameters">
-        <dt class="">baseClasses</dt>
-        <dd>
-            <ul>
-                <li><span class="type">boolean</span></li>
+    <dt class="">baseClasses</dt>
+    <dd>Base classes must be generated ?
+        <ul>
+            <li><span class="type">boolean</span></li>
                 <li><span class="default-value">true</span></li>
-            </ul>
-        </dd>
-        <dt class="required">buildDirectory</dt>
-        <dd>Directory containing the generated JAR.
-            <ul>
-                <li><span class="type">java.io.File</span></li>
+        </ul>
+    </dd>
+    <dt class="required">buildDirectory</dt>
+    <dd>Directory containing the generated JAR.
+        <ul>
+            <li><span class="type">java.io.File</span></li>
                 <li><span class="default-value">${project.build.directory}</span></li>
-            </ul>
-        </dd>
-        <dt class="">customClasses</dt>
-        <dd>
-            <ul>
-                <li><span class="type">boolean</span></li>
-                <li><span class="default-value">true</span></li>
-            </ul>
-        </dd>
-        <dt class="">jarName</dt>
-        <dd>Name of the generated JAR.
-            <ul>
-                <li><span class="type">java.lang.String</span></li>
+        </ul>
+    </dd>
+    <dt class="">customClasses</dt>
+    <dd>custom classes must be generated. (it's recommended to turn it on only first time)
+        <ul>
+            <li><span class="type">boolean</span></li>
+                <li><span class="default-value">false</span></li>
+        </ul>
+    </dd>
+    <dt class="">jarName</dt>
+    <dd>Name of the generated JAR.
+        <ul>
+            <li><span class="type">java.lang.String</span></li>
                 <li><span class="default-value">${project.build.finalName}</span></li>
-            </ul>
-        </dd>
-        <dt class="required">login</dt>
-        <dd>
-            <ul>
-                <li><span class="type">java.lang.String</span></li>
-                
-            </ul>
-        </dd>
-        <dt class="">outputDirectory</dt>
-        <dd>
-            <ul>
-                <li><span class="type">java.io.File</span></li>
+        </ul>
+    </dd>
+    <dt class="required">login</dt>
+    <dd>A VDoc user login
+        <ul>
+            <li><span class="type">java.lang.String</span></li>
+
+        </ul>
+    </dd>
+    <dt class="">outputDirectory</dt>
+    <dd>where classes must be output. You can prefer a specific folder for generated classes but don't forgot to add this folder into compile plugin.
+        <ul>
+            <li><span class="type">java.io.File</span></li>
                 <li><span class="default-value">${project.build.sourceDirectory}</span></li>
-            </ul>
-        </dd>
-        <dt class="required">password</dt>
-        <dd>
-            <ul>
-                <li><span class="type">java.lang.String</span></li>
-                
-            </ul>
-        </dd>
-        <dt class="required">project</dt>
-        <dd>The Maven project.
-            <ul>
-                <li><span class="type">org.apache.maven.project.MavenProject</span></li>
+        </ul>
+    </dd>
+    <dt class="required">password</dt>
+    <dd>the user's password
+        <ul>
+            <li><span class="type">java.lang.String</span></li>
+
+        </ul>
+    </dd>
+    <dt class="required">project</dt>
+    <dd>The Maven project.
+        <ul>
+            <li><span class="type">org.apache.maven.project.MavenProject</span></li>
                 <li><span class="default-value">${project}</span></li>
-            </ul>
-        </dd>
-        <dt class="required">session</dt>
-        <dd>The Maven session.
-            <ul>
-                <li><span class="type">org.apache.maven.execution.MavenSession</span></li>
+        </ul>
+    </dd>
+    <dt class="required">session</dt>
+    <dd>The Maven session.
+        <ul>
+            <li><span class="type">org.apache.maven.execution.MavenSession</span></li>
                 <li><span class="default-value">${session}</span></li>
-            </ul>
-        </dd>
-        <dt class="required">vdocURL</dt>
-        <dd>
-            <ul>
-                <li><span class="type">java.lang.String</span></li>
-                
-            </ul>
-        </dd>
+        </ul>
+    </dd>
+    <dt class="required">vdocURL</dt>
+    <dd>the VDoc url where found data model
+        <ul>
+            <li><span class="type">java.lang.String</span></li>
+
+        </ul>
+    </dd>
 </dl>
 
 <h2 id="pom-example">Example</h2>

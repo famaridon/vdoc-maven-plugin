@@ -1,43 +1,39 @@
 ---
 ---
+
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 ...
+
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>com.vdoc.maven</groupId>
                 <artifactId>vdoc-maven-plugin</artifactId>
                 <version>{{ site.vdoc_maven_plugin_version }}</version>
                 <executions>
                     <execution>
+                        <id>file-upload</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>hard-deploy</goal>
+                            <goal>create-setup</goal><!-- don't forgot to create the setup -->
+                            <goal>upload-setup</goal>
                         </goals>
                         <configuration>
-                            <includeTest>true</includeTest>
-                            <vdocHome>D:\Install\VDoc14.0</vdocHome>
+                            <username>a login</username>
+                            <password>and it's password</password>
+                            <storeUrlHost>the.store.com</storeUrlHost>
+                            <storeUrlport>80</storeUrlport>
+                            <vdocVersion>{{ site.vdoc_current_version }}</vdocVersion>
+                            <setupName>${project.artifactId}-${project.version} for VDoc${project.parent.version}-apps.zip</setupName>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-...
+
 </project>

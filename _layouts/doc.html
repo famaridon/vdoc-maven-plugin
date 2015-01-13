@@ -8,7 +8,7 @@ layout: default
     <p class="lead">{{ page.description }}</p>
 </div>
 
-<div class="container">
+<div class="container" >
     <div class="raw">
         <div class="col-xs-12 col-md-8 main-content" >{{ content }}</div>
         <div class="hidden-xs col-md-4 side-menu" >
@@ -27,7 +27,7 @@ layout: default
             'container': '.main-content', //element to find all selectors in
             'tocListTemplate': '<ul class="nav"></ul>'
         });
-        $('body').scrollspy({ target: '.toc',offset:207 })
+        $('html').scrollspy({ target: '.toc',offset:0 });
     });
 
 </script>
