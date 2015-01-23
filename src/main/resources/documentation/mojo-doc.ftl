@@ -33,7 +33,7 @@ weight: 2
 <#list parameters as parameter>
     <dt class="<#if parameter.required>required</#if>">${parameter.name}</dt>
     <dd>${parameter.description}
-        <ul>
+        <ul class="list-unstyled">
             <li><span class="type">${parameter.type}</span></li>
             <#if parameter.defaultValue?? >
                 <li><span class="default-value">${parameter.defaultValue}</span></li></#if>
