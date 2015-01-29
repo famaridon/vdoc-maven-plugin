@@ -94,13 +94,16 @@ public class HardDeployMojo extends AbstractVDocMojo {
 
                     File sourceRoot = new File(sourceRootPath);
                     File customFolder = new File(sourceRoot.getParentFile(), "custom");
-                    File customWebappFolder = new File(customFolder, "webapp");
+
 
                     if (customFolder.exists()) {
                         getLog().info(String.format("Copy custom %1$s to %2$s", customFolder.getAbsolutePath(), targetCustomFolder.getAbsolutePath()));
                         FileUtils.copyDirectory(customFolder, targetCustomFolder, notWebAppFolderFileFilter);
-                        getLog().info(String.format("Copy webapp %1$s to %2$s", customWebappFolder.getAbsolutePath(), targetWebappFolder.getAbsolutePath()));
-                        FileUtils.copyDirectory(customWebappFolder, targetWebappFolder);
+                        File customWebappFolder = new File(customFolder, "webapp");
+                        if (customWebappFolder.exists()) {
+                            getLog().info(String.format("Copy webapp %1$s to %2$s", customWebappFolder.getAbsolutePath(), targetWebappFolder.getAbsolutePath()));
+                            FileUtils.copyDirectory(customWebappFolder, targetWebappFolder);
+                        }
                     }
                 }
             }
