@@ -23,6 +23,7 @@ import java.io.*;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * this task is used to create a project setup.
@@ -74,10 +75,17 @@ public class CreateSetupMojo extends AbstractVDocMojo {
     @Parameter(defaultValue = "false")
     private boolean includeSource;
     /**
-     * other modules should be merged into this project setup
+     * other modules should be merged into this project setup.<br>
+     * <b>Warning : </b> if you turn on this option it's highly recommended to used <a href="https://cwiki.apache.org/confluence/display/MAVEN/Parallel+builds+in+Maven+3" >Parallel builds</a>.<br>
+     * Else the module with this option set to true should be the last to be build (to avoid thread locking).
      */
     @Parameter(defaultValue = "false")
     private boolean includeOtherModules;
+    /**
+     * how many time this thread should wait for other modules in second.
+     */
+    @Parameter(defaultValue = "30")
+    private long includeOtherModulesTimeout;
     /**
      * dependencies setup should be merged into this project setup
      */
@@ -247,7 +255,7 @@ public class CreateSetupMojo extends AbstractVDocMojo {
             int modulesCount = this.getProject().getParent().getModules().size() - 1;
             do {
                 try {
-                    CompletedModule completedModule = completedModules.take();
+                    CompletedModule completedModule = completedModules.poll(includeOtherModulesTimeout, TimeUnit.SECONDS);
                     getLog().info("Join module " + completedModule.getArtifactId() + " merge setup file " + completedModule.getSetup().getName());
 
                     if (completedModule.getSetup() == null) {
