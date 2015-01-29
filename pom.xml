@@ -6,7 +6,7 @@
 
     <groupId>com.vdoc.maven</groupId>
     <artifactId>vdoc-maven-plugin</artifactId>
-    <version>14.1.0</version>
+    <version>14.1.1-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <dependencies>
@@ -115,6 +115,7 @@
                     <uniqueVersion>true</uniqueVersion>
                 </configuration>
             </plugin>
+            <!--
             <plugin>
                 <groupId>com.vdoc.maven</groupId>
                 <artifactId>vdoc-maven-plugin</artifactId>
@@ -132,8 +133,22 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
 
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>vdoc</id>
+            <name>VDoc internal releases repository</name>
+            <url>http://vsw-dev-eng/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>vdoc.snapshot</id>
+            <name>VDoc internal snapshot repository</name>
+            <url>http://vsw-dev-eng/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
