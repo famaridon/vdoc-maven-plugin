@@ -80,7 +80,7 @@ public class GeneratePluginDocMojo extends AbstractMojo {
             String ftlName = "mojo-doc.ftl";
             try (
                     InputStream input = getClass().getClassLoader().getResourceAsStream("documentation/" + ftlName);
-                    FileOutputStream outputStream = new FileOutputStream(new File(this.tempDirectory, ftlName));
+                    FileOutputStream outputStream = new FileOutputStream(new File(this.tempDirectory, ftlName))
             ) {
                 IOUtils.copy(input, outputStream);
                 outputStream.flush();
@@ -92,7 +92,7 @@ public class GeneratePluginDocMojo extends AbstractMojo {
             for (MojoDescriptor mojoDescriptor : pluginDescriptor.getMojos()) {
                 getLog().info("Build documentation into " + this.outputDirectory.getAbsolutePath() + "/" + mojoDescriptor.getGoal() + ".html");
                 File pom = new File(this.outputDirectory, mojoDescriptor.getGoal() + ".html");
-                try (Writer out = new FileWriter(pom);) {
+                try (Writer out = new FileWriter(pom)) {
                     temp.process(mojoDescriptor, out);
                     out.flush();
                 }

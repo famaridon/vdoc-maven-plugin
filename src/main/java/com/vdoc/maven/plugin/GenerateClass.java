@@ -91,9 +91,9 @@ public class GenerateClass extends AbstractVDocMojo {
 				throw new MojoFailureException("Can't generate VDoc interfaces!");
 			}
 
-			try (ZipInputStream zipInputStream = new ZipInputStream(getClassesResponse.getEntity().getContent());) {
-				this.unzip(zipInputStream, this.outputDirectory);
-			}
+            try (ZipInputStream zipInputStream = new ZipInputStream(getClassesResponse.getEntity().getContent())) {
+                this.unzip(zipInputStream, this.outputDirectory);
+            }
 
 		} catch (JAXBException e) {
 			getLog().error("Can't init the JAXB context : ", e);
@@ -154,13 +154,13 @@ public class GenerateClass extends AbstractVDocMojo {
 			// Once we get the entry from the stream, the stream is
 			// positioned read to read the raw data, and we keep
 			// reading until read returns 0 or less.
-			File targetFile = new File((String) this.project.getCompileSourceRoots().iterator().next(), entry.getName());
-			targetFile.getParentFile().mkdirs();
-			getLog().info("Create file : " + targetFile.getPath());
-			try (FileOutputStream outputStream = new FileOutputStream(targetFile);) {
-				int len = 0;
-				while ((len = stream.read(buffer)) > 0) {
-					outputStream.write(buffer, 0, len);
+            File targetFile = new File(this.project.getCompileSourceRoots().iterator().next(), entry.getName());
+            targetFile.getParentFile().mkdirs();
+            getLog().info("Create file : " + targetFile.getPath());
+            try (FileOutputStream outputStream = new FileOutputStream(targetFile)) {
+                int len;
+                while ((len = stream.read(buffer)) > 0) {
+                    outputStream.write(buffer, 0, len);
 				}
 				outputStream.flush();
 			}

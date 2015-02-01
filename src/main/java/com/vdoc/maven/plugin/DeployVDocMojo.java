@@ -164,9 +164,8 @@ public class DeployVDocMojo extends AbstractVDocMojo {
 			String ftlName = artifactId + ".ftl";
 			try (
 					InputStream input = getClass().getClassLoader().getResourceAsStream("pom/" + ftlName);
-					FileOutputStream outputStream = new FileOutputStream(new File(this.mavenHome, ftlName));
-			)
-			{
+                    FileOutputStream outputStream = new FileOutputStream(new File(this.mavenHome, ftlName))
+            ) {
 				IOUtils.copy(input, outputStream);
 				outputStream.flush();
 			}
@@ -175,9 +174,8 @@ public class DeployVDocMojo extends AbstractVDocMojo {
 			Template temp = cfg.getTemplate(ftlName);
 
 			File pom = new File(this.mavenHome, "pom.xml");
-			try (Writer out = new FileWriter(pom);)
-			{
-				temp.process(this, out);
+            try (Writer out = new FileWriter(pom)) {
+                temp.process(this, out);
 				out.flush();
 			}
 
@@ -320,9 +318,8 @@ public class DeployVDocMojo extends AbstractVDocMojo {
 			 JarOutputStream javadocOutputStream = new JarOutputStream(javadocFileOutputStream);
 
 			 FileOutputStream sourceFileOutputStream = new FileOutputStream(source);
-			 JarOutputStream sourceOutputStream = new JarOutputStream(sourceFileOutputStream);
-		)
-		{
+             JarOutputStream sourceOutputStream = new JarOutputStream(sourceFileOutputStream)
+        ) {
 
 			ZipEntry archiveEntry;
 			while ((archiveEntry = jarInputStream.getNextEntry()) != null) {
