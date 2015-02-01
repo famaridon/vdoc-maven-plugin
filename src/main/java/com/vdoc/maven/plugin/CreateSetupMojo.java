@@ -107,6 +107,8 @@ public class CreateSetupMojo extends AbstractVDocMojo {
             return;
         }
 
+        String s = "";
+
         File createdSetup;
         try {
 
@@ -131,23 +133,27 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 
         getLog().info("Create the VDoc apps packaging Zip.");
         File vdocAppOutput = new File(buildDirectory, setupName + ".zip");
-        try (ZipArchiveOutputStream output = new ZipArchiveOutputStream(vdocAppOutput);) {
+        try (ZipArchiveOutputStream output = new ZipArchiveOutputStream(vdocAppOutput)) {
+
+            getLog().debug("try to add custom resources ");
             for (Resource r : this.project.getResources()) {
-                File customFolder = new File(r.getDirectory() + "/../custom/");
+                File resourcesDirectory = new File(r.getDirectory());
+                File customFolder = new File(resourcesDirectory.getParentFile(), "custom");
+                getLog().debug("add custom folder " + customFolder.getAbsolutePath());
                 if (customFolder.isDirectory()) {
-                    File[] customFolders = new File(r.getDirectory() + "/../custom/").listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
+                    File[] customFolders = customFolder.listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
                     for (File f : customFolders) {
                         this.compressDirectory(output, f, BASE_ZIP_FOLDER);
                     }
                 }
             }
-            this.compressDirectory(output, this.getJarFile(buildDirectory, jarName, null), "lib/");
+            this.compressDirectory(output, AbstractVDocMojo.getJarFile(buildDirectory, jarName, null), "lib/");
             if (this.libFolder.exists()) {
                 this.compressDirectory(output, libFolder, BASE_ZIP_FOLDER);
             }
 
             if (this.includeTest) {
-                File testJar = this.getJarFile(buildDirectory, jarName, "test");
+                File testJar = AbstractVDocMojo.getJarFile(buildDirectory, jarName, "test");
                 if (testJar.exists()) {
                     this.compressDirectory(output, testJar, "lib/");
                 } else {
@@ -156,18 +162,18 @@ public class CreateSetupMojo extends AbstractVDocMojo {
             }
 
             if (this.includeSource) {
-                this.compressDirectory(output, this.getJarFile(buildDirectory, jarName, "source"), "lib/");
+                this.compressDirectory(output, AbstractVDocMojo.getJarFile(buildDirectory, jarName, "source"), "lib/");
             }
 
             if (this.includeJavadoc) {
-                this.compressDirectory(output, this.getJarFile(buildDirectory, jarName, "javadoc"), "lib/");
+                this.compressDirectory(output, AbstractVDocMojo.getJarFile(buildDirectory, jarName, "javadoc"), "lib/");
             }
         }
 
 
         getLog().info("create the meta setup zip with apps, documentation, fix, ...");
         File metaAppOutput = new File(buildDirectory, setupName + "-" + SETUP_SUFFIX + ".zip");
-        try (ZipArchiveOutputStream output = new ZipArchiveOutputStream(metaAppOutput);) {
+        try (ZipArchiveOutputStream output = new ZipArchiveOutputStream(metaAppOutput)) {
             for (Resource r : this.project.getResources()) {
                 File userAppsCustomFolder = new File(r.getDirectory() + "/../user_apps_custom/");
                 if (userAppsCustomFolder.isDirectory()) {
@@ -177,6 +183,11 @@ public class CreateSetupMojo extends AbstractVDocMojo {
                     }
                 }
             }
+
+            // add the packaged apps
+            getLog().debug("add the packaged apps");
+            this.compressDirectory(output, vdocAppOutput, "apps/");
+
 
             // include linked apps
             if (includeDependenciesSetups) {
@@ -218,7 +229,7 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 
                     } else {
                         try (BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-                             ArchiveInputStream input = new ArchiveStreamFactory().createArchiveInputStream(bufferedInputStream);) {
+                             ArchiveInputStream input = new ArchiveStreamFactory().createArchiveInputStream(bufferedInputStream)) {
 
                             this.mergeArchive(output, input);
 
@@ -265,7 +276,7 @@ public class CreateSetupMojo extends AbstractVDocMojo {
 
                     try (FileInputStream fileInputStream = new FileInputStream(completedModule.getSetup());
                          BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-                         ArchiveInputStream input = new ArchiveStreamFactory().createArchiveInputStream(bufferedInputStream);) {
+                         ArchiveInputStream input = new ArchiveStreamFactory().createArchiveInputStream(bufferedInputStream)) {
 
                         this.mergeArchive(output, input);
 
