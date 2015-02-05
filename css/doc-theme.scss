@@ -112,11 +112,11 @@ h1,h2,h3,h4,h5{
 }
 
 .toc{
-  .active>a{
+  /*.active>a{
     border-left: 2px;
     border-left-style: solid;
     border-left-color: $color-ternary-4;
-  }
+  }*/
   ul{
     list-style: none;
     ul li a {
