@@ -226,9 +226,7 @@
         <profile>
             <id>vdoc-configuration</id>
             <activation>
-                <file>
-                    <exists>home.properties</exists>
-                </file>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <build>
                 <plugins>
@@ -245,7 +243,9 @@
                                 <configuration>
                                     <files>
                                         <file>home.properties</file>
+                                        <file>../home.properties</file>
                                     </files>
+                                    <quiet>true</quiet>
                                 </configuration>
                             </execution>
                         </executions>

@@ -339,8 +339,10 @@ public class DeployVDocMojo extends AbstractVDocMojo {
 				{
 					getLog().debug("class : " + archiveEntry.getName());
 					if (archiveEntry.getSize() > 0) {
-						jarInputStream.skip(archiveEntry.getSize());
-					}
+                        if (archiveEntry.getSize() != jarInputStream.skip(archiveEntry.getSize())) {
+                            throw new IllegalStateException("the archive reader cursore have not skip the right number of byte!");
+                        }
+                    }
 				}
 			}
 

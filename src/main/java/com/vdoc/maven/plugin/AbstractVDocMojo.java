@@ -45,7 +45,8 @@ public abstract class AbstractVDocMojo extends AbstractMojo {
 	protected File buildDirectory;
 
 	protected AbstractVDocMojo() {
-		notWebAppFolderFileFilter = new FileFilter() {
+        super();
+        notWebAppFolderFileFilter = new FileFilter() {
 			@Override
 			public boolean accept(File file) {
 				return !FilenameUtils.wildcardMatch(file.getAbsolutePath(), WILDCARD_WEB_APP, IOCase.INSENSITIVE);

@@ -15,7 +15,8 @@ public class StreamGobbler extends Thread {
 	protected String prefix;
 
 	public StreamGobbler(InputStream is, GobblerAdapter gobblerAdapter, String prefix) {
-		this.is = is;
+        super();
+        this.is = is;
 		this.prefix = prefix;
 		this.gobblerAdapter = gobblerAdapter;
 	}
@@ -24,9 +25,9 @@ public class StreamGobbler extends Thread {
 	public void run() {
 		try (
 				InputStreamReader isr = new InputStreamReader(is);
-				BufferedReader br = new BufferedReader(isr);) {
-			String line = null;
-			while ((line = br.readLine()) != null) {
+                BufferedReader br = new BufferedReader(isr)) {
+            String line;
+            while ((line = br.readLine()) != null) {
 				gobblerAdapter.println(prefix + " > " + line);
 			}
 
