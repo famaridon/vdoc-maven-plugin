@@ -79,8 +79,8 @@ public class GenerateClass extends AbstractVDocMojo {
 			StringBuilder getClassesURL = new StringBuilder(vdocURL);
 			getClassesURL.append("navigation/classes/generator?")
 					.append("_AuthenticationKey=").append(response.getBody().getToken().getKey())
-					.append("&customClasses=").append(customClasses)
-					.append("&baseClasses=").append(baseClasses);
+					.append("&customflag=").append(customClasses)
+					.append("&baseflag=").append(baseClasses);
 
 			HttpGet getClasses = new HttpGet(getClassesURL.toString());
 			getClasses.setHeader("Content-Type", "application/xml");
